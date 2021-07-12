@@ -2275,6 +2275,11 @@ border-radius: 16px !important;
     margin-left: 40px;
 }
 
+.listeo-related-listing{
+    width: 100%;
+    float: left;
+}
+
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{
         display: none !important;
