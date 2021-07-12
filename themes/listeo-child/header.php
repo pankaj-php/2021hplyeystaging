@@ -17,6 +17,25 @@
 <link rel="profile" href="http://gmpg.org/xfn/11">
 
 <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/dc4285c4cb175999fbcda06d9/0746602a13fe3b6f31e5be09d.js");</script>
+
+<?php
+if( is_single() ) {
+	$business_title = get_post_meta(get_the_ID(),'_website',true);
+	?>
+	<script>
+  		document.title = "<?php echo get_the_title().' | '.$business_title.' | '.get_option('blogdescription').' - '.get_option('blogname'); ?>";
+	</script>
+	<?php
+}
+else {
+	?>
+	<script>
+  		document.title = "<?php echo get_the_title() .' | '. get_option('blogdescription') .' - '.get_option('blogname'); ?>";
+	</script>
+	<?php
+}
+?>
+
 <?php wp_head(); ?>
 </head>
 
