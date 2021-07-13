@@ -347,6 +347,9 @@ else: ?>
 			<?php if(!get_option('listeo_disable_reviews')){ 
 				$template_loader->get_template_part( 'single-partials/single-listing','reviews' ); } ?>
 		</div>
+		<div class="listeo-related-listing">
+			<?php $template_loader->get_template_part( 'single-partials/single-listing','related' ); ?>
+		</div>
 	</div>
 </div>
 
