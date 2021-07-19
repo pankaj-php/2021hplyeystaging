@@ -299,7 +299,7 @@ else: ?>
 											</div>
 											<div style="margin-top:5px;" class="new-list-btn unverify_listing_btn">
 												<a id="unverify_listing_msg_btn" href="#small-dialog" class="send-message-to-owner button popup-with-zoom-anim listeo_list_provider_meg_btn">
-													<?php esc_html_e('Message Business', 'listeo'); ?>
+													<?php esc_html_e('Contact', 'listeo'); ?>
 												</a>
 											</div>
 										<?php
@@ -308,7 +308,7 @@ else: ?>
 										?>
 										<div style="margin-top:5px;" class="new-list-btn unverify_listing_btn">
 											<a id="unverify_listing_msg_btn" href="#sign-in-dialog" class="send-message-to-owner button popup-with-zoom-anim listeo_list_provider_meg_btn" style="display:inline-block;">
-												Message Business				</a>
+												Contact				</a>
 										</div>
 										<?php
 									}	
