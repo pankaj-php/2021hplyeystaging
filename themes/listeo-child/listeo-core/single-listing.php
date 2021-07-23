@@ -62,7 +62,7 @@ else: ?>
 <div class="container">
 	<div class="row sticky-wrapper">
 <?php while ( have_posts() ) : the_post();  ?>
-		<div class="col-lg-8 col-md-8 padding-right-30">
+		<div class="col-md-8 padding-right-30">
 			
 			<!-- Titlebar -->
 			<div id="titlebar" class="listing-titlebar">
@@ -289,7 +289,7 @@ else: ?>
 		<?php endwhile; // End of the loop. ?>
 		<!-- Sidebar
 		================================================== -->
-		<div class="col-lg-4 col-md-4 margin-top-75 sticky">
+		<div class="col-md-4 margin-top-75 sticky">
 
 				<?php if( get_post_meta($post->ID,'_verified',true ) == 'on') : ?>
 					<!-- Verified Badge -->
