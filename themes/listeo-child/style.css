@@ -2069,7 +2069,7 @@ span.cm-chat-icon {
 .send-message-from-widget .notification {
     display: none;
 }
-.listing-nav{display:none !important;}
+/*.listing-nav{display:none !important;}*/
 
 
 @media only screen and (max-width: 600px){
@@ -2322,6 +2322,11 @@ border-radius: 16px !important;
     float: left;
 }
 /*end direct fb style msg*/
+
+#listing-nav{
+    display: inline-block;
+    width: 100%;
+}
 
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{

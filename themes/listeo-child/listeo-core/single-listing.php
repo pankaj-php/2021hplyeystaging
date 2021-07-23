@@ -231,7 +231,7 @@ else: ?>
 					<li><a href="#listing-location"><?php esc_html_e('Location','listeo_core'); ?></a></li>
 					<?php 
 					endif;
-                    echo 'tetxt asd here';
+                    // echo 'tetxt asd here';
 					if(get_post_meta( $post->ID, '_cancellation_policy', true) != '') {
 					?>
 						<li><a href="#listing-cancellation_policy"><?php esc_html_e('Cancellation policy','listeo_core'); ?></a></li>	
