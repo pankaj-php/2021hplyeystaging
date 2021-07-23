@@ -2133,7 +2133,7 @@ border-radius: 16px !important;
 
 .main-search-container:before{background:#ffffffe6!important}
 
-/*GK*/
+/* SGK style style */
 .listeo_gallery_main {
     padding-left: 125px;
     padding-right: 125px;
@@ -2280,6 +2280,49 @@ border-radius: 16px !important;
     float: left;
 }
 
+/*direct fb style msg*/
+.listeo_direct_fb_style_msg{
+    width: 100%;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_input{
+    width: 50%;
+    float: left;
+    margin-right: 10px;
+}
+.listeo_direct_fb_style_msg_input input{
+    border-radius: 10px;
+    font-weight: 700;
+}
+.listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
+    width: 20%;
+    float: left;
+    margin-top: 12px;
+}
+.listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
+    background: #19b453 !important;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    margin: 0;
+    padding: 15px 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#listeo_direct_fb_style_msg_success{
+    display: none;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: -12px;
+    margin-left: 5px;
+    width: 100%;
+    float: left;
+}
+/*end direct fb style msg*/
+
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{
         display: none !important;
@@ -2289,6 +2332,27 @@ border-radius: 16px !important;
     }
     .listeo_gallery_count_photos{
         display: block !important;
+    }
+    .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
+        padding: 10px 30px !important;
+    }
+    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
+        margin-top: 5px !important;
+    }
+    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_input{
+        width: 70% !important;
+    }
+    #listeo_direct_fb_style_msg_success{
+        font-size: 14px !important;
+    }
+    .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
+        padding: 12px 35px !important;
+    }
+    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
+        margin-top: 9px !important;
+    }
+    #listeo_direct_fb_style_msg_success{
+        font-size: 14px !important;
     }
 }
 @media (min-width: 768px) and (max-width: 992px) { 

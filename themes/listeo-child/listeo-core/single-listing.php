@@ -134,6 +134,7 @@ else: ?>
 							</a>
 						</span>
 					<?php endif; ?>
+					
 					<?php
 						if(!get_option('listeo_disable_reviews')){
 							 $rating = get_post_meta($post->ID, 'listeo-avg-rating', true); 
@@ -150,8 +151,45 @@ else: ?>
 							<?php endif; 
 						}
 					?>
-				</div>
 
+					<!-- FB message style -->
+					<?php
+						$owner_id = get_the_author_meta( 'ID' );
+						$owner_data = get_userdata( $owner_id );
+						$direct_fb_style_referral = "listing_".get_the_ID(); 
+						if( get_post_meta($post->ID,'_verified',true ) == 'on') {
+							$fb_style_input_val = "Hi ".$owner_data->first_name.", is this available?";
+							$fb_style_send_btn = '<a href="#" id="direct_fb_style_msg_btn"> Send </a>';
+						}
+						else{
+							$fb_style_input_val = "Hi, is this available?";
+							$fb_style_send_btn = '<a href="#" id="listeo_fb_style_unverify_msg"> Send </a>';
+						}
+					?>
+
+					<div class="listeo_direct_fb_style_msg">
+						<h4> <?php esc_html_e('Send seller a message','listeo_core'); ?> </h4>	
+						<input value="<?php echo $owner_id; ?>" type="hidden" id="direct_fb_style_recipient">
+						<input value="<?php echo $direct_fb_style_referral; ?>" type="hidden" id="direct_fb_style_referral">
+						<input value="<?php echo get_the_ID(); ?>" type="hidden" id="direct_fb_style_listing_id">
+						<div class="listeo_direct_fb_style_msg_input">
+							<input placeholder="Enter your message" value="<?php echo $fb_style_input_val; ?>" type="text" id="direct_fb_style_msg">
+						</div>
+						<div class="listeo_direct_fb_style_msg_btn">
+							<?php
+								if(is_user_logged_in()){
+									echo $fb_style_send_btn;
+								}
+								else{
+									?>
+										<a href="#sign-in-dialog" class="popup-with-zoom-anim book-now-notloggedin sign_in_link" id="direct_fb_style_msg_btn"> <?php esc_html_e('Send','listeo_core'); ?> </a>
+									<?php	
+								}
+							?>
+						</div>
+						<p id="listeo_direct_fb_style_msg_success"></p>
+					</div>
+				</div>
 			</div>
 			<!-- Content
 			================================================== -->

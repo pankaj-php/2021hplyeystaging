@@ -2243,6 +2243,76 @@
     $("input[name='_menu[0][menu_elements][0][price]']").attr('step','1');
     $("input[name='_menu[0][menu_elements][0][price]']").attr('min','1');
 
+    $("body").on('click','#direct_fb_style_msg_btn',function(e){
+        e.preventDefault();
+        var direct_fb_style_recipient = $("#direct_fb_style_recipient").val();
+        var direct_fb_style_referral = $("#direct_fb_style_referral").val();
+        var direct_fb_style_msg = $("#direct_fb_style_msg").val();
+
+        if( direct_fb_style_msg != ""){
+            $.ajax({
+                type: 'POST', dataType: 'json',
+                url: listeo.ajaxurl,
+                data: {
+                    'action': 'listeo_direct_fb_style_msg',
+                    'direct_fb_style_recipient': direct_fb_style_recipient,
+                    'direct_fb_style_referral': direct_fb_style_referral,
+                    'direct_fb_style_msg': direct_fb_style_msg,
+                },
+                success: function(data){
+                    if(data.success == 1){
+                        $("#listeo_direct_fb_style_msg_success").show();
+                        $("#listeo_direct_fb_style_msg_success").css("color","#19b453");
+                        $("#listeo_direct_fb_style_msg_success").text(data.message);
+                        $("#direct_fb_style_msg").val('');
+                    }
+                    else{
+                        console.log(data.message);
+                    }
+                }
+            });
+        }
+        else{
+            $("#listeo_direct_fb_style_msg_success").show();
+            $("#listeo_direct_fb_style_msg_success").css("color","red");
+            $("#listeo_direct_fb_style_msg_success").text("Please enter your message");
+        }
+    });
+
+    $("body").on('click','#listeo_fb_style_unverify_msg',function(e){
+        e.preventDefault();
+        var direct_fb_style_msg = $("#direct_fb_style_msg").val();
+        var direct_fb_style_listing_id = $("#direct_fb_style_listing_id").val();
+
+        if( direct_fb_style_msg != ""){
+            $.ajax({
+                type: 'POST', dataType: 'json',
+                url: listeo.ajaxurl,
+                data: {
+                    'action': 'listeo_fb_style_unverify_msg',
+                    'direct_fb_style_msg': direct_fb_style_msg,
+                    'listing_id': direct_fb_style_listing_id,
+                },
+                success: function(data){
+                    if(data.success == 1){
+                        $("#listeo_direct_fb_style_msg_success").show();
+                        $("#listeo_direct_fb_style_msg_success").css("color","#19b453");
+                        $("#listeo_direct_fb_style_msg_success").text(data.message);
+                        $("#direct_fb_style_msg").val('');
+                    }
+                    else{
+                        console.log(data.message);
+                    }
+                }
+            });
+        }
+        else{
+            $("#listeo_direct_fb_style_msg_success").show();
+            $("#listeo_direct_fb_style_msg_success").css("color","red");
+            $("#listeo_direct_fb_style_msg_success").text("Please enter your message");
+        }
+    });
+
     })(this.jQuery);
     /**/
 
