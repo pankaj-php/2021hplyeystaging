@@ -2327,6 +2327,13 @@ border-radius: 16px !important;
     display: inline-block;
     width: 100%;
 }
+.listing_feature_not_checked{
+    text-decoration: line-through;
+}
+.listing_feature_not_checked:before{
+    background-color: gray !important;
+    content: "\f00d" !important;
+}
 
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{
@@ -2387,5 +2394,14 @@ border-radius: 16px !important;
         right: 24px;
         bottom: 24px;
         z-index: 3 !important; 
+    }
+    .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
+        padding: 12px 35px !important;
+    }
+    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
+        margin-top: 9px !important;
+    }
+    #listeo_direct_fb_style_msg_success{
+        font-size: 14px !important;
     }
 }
