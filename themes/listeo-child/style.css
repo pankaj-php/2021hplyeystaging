@@ -2133,7 +2133,7 @@ border-radius: 16px !important;
 
 .main-search-container:before{background:#ffffffe6!important}
 
-/* SGK style style */
+/*GK*/
 .listeo_gallery_main {
     padding-left: 125px;
     padding-right: 125px;
@@ -2280,61 +2280,6 @@ border-radius: 16px !important;
     float: left;
 }
 
-/*direct fb style msg*/
-.listeo_direct_fb_style_msg{
-    width: 100%;
-    float: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_input{
-    width: 50%;
-    float: left;
-    margin-right: 10px;
-}
-.listeo_direct_fb_style_msg_input input{
-    border-radius: 10px;
-    font-weight: 700;
-}
-.listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
-    width: 20%;
-    float: left;
-    margin-top: 12px;
-}
-.listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
-    background: #19b453 !important;
-    color: #fff;
-    border-radius: 5px;
-    font-size: 16px;
-    text-align: center;
-    margin: 0;
-    padding: 15px 35px;
-    font-weight: bold;
-    cursor: pointer;
-}
-#listeo_direct_fb_style_msg_success{
-    display: none;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: -12px;
-    margin-left: 5px;
-    width: 100%;
-    float: left;
-}
-/*end direct fb style msg*/
-
-#listing-nav{
-    display: inline-block;
-    width: 100%;
-}
-.listing_feature_not_checked{
-    text-decoration: line-through;
-}
-.listing_feature_not_checked:before{
-    background-color: gray !important;
-    content: "\f00d" !important;
-}
-
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{
         display: none !important;
@@ -2344,27 +2289,6 @@ border-radius: 16px !important;
     }
     .listeo_gallery_count_photos{
         display: block !important;
-    }
-    .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
-        padding: 10px 30px !important;
-    }
-    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
-        margin-top: 5px !important;
-    }
-    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_input{
-        width: 70% !important;
-    }
-    #listeo_direct_fb_style_msg_success{
-        font-size: 14px !important;
-    }
-    .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
-        padding: 12px 35px !important;
-    }
-    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
-        margin-top: 9px !important;
-    }
-    #listeo_direct_fb_style_msg_success{
-        font-size: 14px !important;
     }
 }
 @media (min-width: 768px) and (max-width: 992px) { 
@@ -2389,67 +2313,4 @@ border-radius: 16px !important;
         border-top-right-radius:10px;
         border-bottom-right-radius:10px;
     }
-    .listeo_gallery_show_all_btn_min{
-        position: absolute;
-        right: 24px;
-        bottom: 24px;
-        z-index: 3 !important; 
-    }
-}
-
-/*Social media login links design */
-/* Social Design Start*/
-.mo-openid-app-icons a {
-    padding-left: 0px !important;
-	margin-bottom: 10px !important;
-    background: linear-gradient(90deg, rgb(255, 255, 255) 40px, #ffff 40px) !important;
-	color: #808080 !important;
-    border: 2px solid rgba(22, 22, 22, 0.1)!important;
-	width: 100% !important; 
-	padding-top: 13px !important; 
-	padding-bottom: 13px !important;
-	border-radius: 4px !important; 
-	cursor: pointer;
-}
-.fa-google {
-	padding-top: 4px !important;
-    background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat!important;
-   -webkit-background-clip: text!important;
-    background-clip: text!important;
-    color: transparent!important;
-   -webkit-text-fill-color: transparent!important;
-}
-.social-login-separator{
-	display:none!important;
-}
-.fa-facebook {
-	color: #607FC0!important;
-}
-.mo_btn-social>:first-child {
-	border-right :none!important;
-}
-.social-or {
-    width: 100%;
-    text-align: center;
-    border-bottom: 2px solid rgba(22,22,22,.1)!important;
-    line-height: .1em;
-    margin: 10px 0 0px;
-} 
-
-.social-or span { 
-    background:#fff; 
-    padding:0 10px; 
-   	color: #808080;
-}
-/* Social Design End*/
-
-    .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
-        padding: 12px 35px !important;
-    }
-    .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
-        margin-top: 9px !important;
-    }
-    #listeo_direct_fb_style_msg_success{
-        font-size: 14px !important;
-    }
-}
+  
