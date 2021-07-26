@@ -36,7 +36,12 @@
 	            }
 	            $gallery_count++;
 	        }
-	        echo '<div class="listeo_gallery_show_all_btn_min"> <a href="#listeo_gallery_show_all_photos" class="button listeo_gallery_show_all_btn popup-with-zoom-anim"> Show all photos </a></div>';
+
+	        if ( $gallery_count >= 5) {
+
+	        	echo '<div data-ttt="'.$gallery_count.'" class="listeo_gallery_show_all_btn_min"> <a href="#listeo_gallery_show_all_photos" class="button listeo_gallery_show_all_btn popup-with-zoom-anim"> Show all photos </a></div>';
+	        }
+    	
     	echo '</div>';
         
         echo '<div class="listeo_gallery_mobail_main">';

@@ -69,14 +69,11 @@
        //  });
 
       $('body').on('click', ".listeo_core-bookmark-it", function(e){
-
           e.preventDefault();
           if($(this).is('.clicked,.liked')){
             return;
           }
           $(this).addClass('clicked');
-
-
           var post_id   = $(this).data("post_id"),
           handler     = $(this),
           nonce       = $(this).data("nonce"),
@@ -97,10 +94,8 @@
                    handler.removeClass('listeo_core-bookmark-it').addClass('liked').addClass('listeo_core-unbookmark-it').removeClass('clicked');
                    var confirmed = handler.data('confirm');
                    handler.children('.like-icon').addClass('liked').removeClass('clicked').parent().html('<span class="like-icon liked"></span> '+confirmed);
-
                 }
                 else {
-
                    handler.removeClass('clicked');
                    handler.children('.like-icon').removeClass('liked');
                 }
@@ -108,9 +103,7 @@
           })
       });
 
-
-
-      $(".listeo_core-unbookmark-it").on('click', function(e){
+      $('body').on('click', ".listeo_core-unbookmark-it", function(e){
           e.preventDefault();
           var handler = $(this);
           var post_id = $(this).data("post_id");
@@ -129,9 +122,9 @@
                     handler.removeClass('clicked');
                     handler.removeClass('liked');
                     handler.children('.like-icon').removeClass('liked');
+                    handler.removeClass('listeo_core-unbookmark-it').addClass('listeo_core-bookmark-it');
                 }
                 else {
-
                    handler.closest('li').removeClass('opacity-05');
                 }
              }
@@ -1026,136 +1019,136 @@
         }
 
         $('#send-message-from-chat').on('submit',function(e) {
-        	var message = $(this).find('textarea#contact-message').val();
+          var message = $(this).find('textarea#contact-message').val();
 
-			if(message.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi)) {
-				var m_email_found = 1;
-				//console.log("email found");
-			} else {
-				var m_email_found = 0;
-			}
+      if(message.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi)) {
+        var m_email_found = 1;
+        //console.log("email found");
+      } else {
+        var m_email_found = 0;
+      }
 
-			if(message.match(/[\+]?\d{6}|\(\d{3}\)\s?-\d{6}/)) {
-				var m_mobile_found = 1;
-			} else {
-				var m_mobile_found = 0;
-			}
+      if(message.match(/[\+]?\d{6}|\(\d{3}\)\s?-\d{6}/)) {
+        var m_mobile_found = 1;
+      } else {
+        var m_mobile_found = 0;
+      }
 
-			if(CheckUrl(message)) {
-				var m_url_found = 1;
-				//console.log("email found");
-			} else {
-				var m_url_found = 0;
-			}
+      if(CheckUrl(message)) {
+        var m_url_found = 1;
+        //console.log("email found");
+      } else {
+        var m_url_found = 0;
+      }
 
-			if(message.match(/(@[a-zA-Z0-9._-])/gi)) {
-				var m_ekthret_found = 1;
-				//console.log("email found");
-			} else {
-				var m_ekthret_found = 0;
-			}
+      if(message.match(/(@[a-zA-Z0-9._-])/gi)) {
+        var m_ekthret_found = 1;
+        //console.log("email found");
+      } else {
+        var m_ekthret_found = 0;
+      }
 
-			if(m_email_found == 1 || m_mobile_found == 1  || m_url_found == 1 || m_ekthret_found == 1 || filter_hyply_chat_message(message) == 1) {
-				var listeo_msg_err = '<div style="margin-top: 5px;" class="listeo_msg_err notification error listing-manager-error">Websites, emails and phone numbers aren’t allowed in message. To keep Hypley users and yourself safe from phishing, scraping etc please remove to continue publishing your message.<a class="close"></a></div>';
-				$('.listeo_msg_err').remove();
-				$("#contact-message").after(listeo_msg_err);
-			} else{
-				console.log('enter');
-	            $('.listeo_msg_err').remove();
+      if(m_email_found == 1 || m_mobile_found == 1  || m_url_found == 1 || m_ekthret_found == 1 || filter_hyply_chat_message(message) == 1) {
+        var listeo_msg_err = '<div style="margin-top: 5px;" class="listeo_msg_err notification error listing-manager-error">Websites, emails and phone numbers aren’t allowed in message. To keep Hypley users and yourself safe from phishing, scraping etc please remove to continue publishing your message.<a class="close"></a></div>';
+        $('.listeo_msg_err').remove();
+        $("#contact-message").after(listeo_msg_err);
+      } else{
+        console.log('enter');
+              $('.listeo_msg_err').remove();
 
-	            $(this).find('textarea#contact-message').removeClass('error');
-	            $('.loading').show();
-	            $(this).find('button').prop('disabled', true);
+              $(this).find('textarea#contact-message').removeClass('error');
+              $('.loading').show();
+              $(this).find('button').prop('disabled', true);
 
-	            var message = $(this).find('textarea#contact-message').val(),
-	            recipient = $(this).find('input#recipient').val(),
-	            conversation_id = $(this).find('input#conversation_id').val();
-	            //console.log(message);
-      			console.log('ajax');
-	            if(message) {
-		            var $this = $(this).find('#fileInput');
-		            var file_obj = $this.prop('files');
-		            var form_data = new FormData();
-		            for(i=0; i<file_obj.length; i++) {
-		            	form_data.append('file[]', file_obj[i]);
-		            }
-		            form_data.append('recipient',recipient);
-		            form_data.append('conversation_id',conversation_id);
-		            form_data.append('message',message);
-		            form_data.append('action', 'listeo_send_message_chat');
-		            // reset form fields
-		            $('#send-message-from-chat')[0].reset();
-		            $('.selected-files').html('');
+              var message = $(this).find('textarea#contact-message').val(),
+              recipient = $(this).find('input#recipient').val(),
+              conversation_id = $(this).find('input#conversation_id').val();
+              //console.log(message);
+            console.log('ajax');
+              if(message) {
+                var $this = $(this).find('#fileInput');
+                var file_obj = $this.prop('files');
+                var form_data = new FormData();
+                for(i=0; i<file_obj.length; i++) {
+                  form_data.append('file[]', file_obj[i]);
+                }
+                form_data.append('recipient',recipient);
+                form_data.append('conversation_id',conversation_id);
+                form_data.append('message',message);
+                form_data.append('action', 'listeo_send_message_chat');
+                // reset form fields
+                $('#send-message-from-chat')[0].reset();
+                $('.selected-files').html('');
 
-	            	//console.log(form_data);
-
-
-					/*$(this).addClass("invalid_listing_description");
-					$(".emailnotic_listing_description").remove();
-					var email_mobile_notic = '<div style="margin-top: 5px;" class="emailnotic_listing_description notification error listing-manager-error">Websites, emails and phone numbers aren’t allowed in listing descriptions. To keep Hypley users and yourself safe from phishing, scraping etc please remove to continue publishing your listing.<a class="close"></a></div>';
-
-					$("#wp-listing_description-editor-container").after(email_mobile_notic);*/
-
-					$('.loading').show();
-					//console.log('ajax1')
-					$.ajax({
-					    type: 'POST',
-					    url: listeo.ajaxurl,
-					    data: form_data,
-					    contentType: false,
-					    processData: false,
-					    success: function(data){
-					    	//console.log(data);
-							//console.log('I am fron core plugin');
-							//console.log(data);
-							var obj = jQuery.parseJSON( data );
-							//console.log(obj.type);
-							if(obj.type == "success") {
-								$(this).addClass('success');
-								//$('#send-message-from-chat textarea').val('');
-								$('#send-message-from-chat button').prop('disabled', false);
-								// $('.loading').show();
-								refreshMessages();
-								// $('.loading').hide();
-							} else {
-								$(this).addClass('error');
-							}
-						}
-
-					});
+                //console.log(form_data);
 
 
-					/*$(this).find('textarea#contact-message').removeClass('error');
-					$('.loading').show();
-					$(this).find('button').prop('disabled', true);
+          /*$(this).addClass("invalid_listing_description");
+          $(".emailnotic_listing_description").remove();
+          var email_mobile_notic = '<div style="margin-top: 5px;" class="emailnotic_listing_description notification error listing-manager-error">Websites, emails and phone numbers aren’t allowed in listing descriptions. To keep Hypley users and yourself safe from phishing, scraping etc please remove to continue publishing your listing.<a class="close"></a></div>';
 
-					$.ajax({
-					    type: 'POST', dataType: 'json',
-					    url: listeo.ajaxurl,
-					    data: {
-					        'action': 'listeo_send_message_chat',
-					        'recipient' : $(this).find('input#recipient').val(),
-					        'conversation_id' : $(this).find('input#conversation_id').val(),
-					        'message' : message,
-					        //'nonce': nonce
-					       },
-					    success: function(data){
+          $("#wp-listing_description-editor-container").after(email_mobile_notic);*/
 
-					        if(data.type == "success") {
-					            $(this).addClass('success');
-					            refreshMessages();
-					            $('#send-message-from-chat textarea').val('');
-					            $('#send-message-from-chat button').prop('disabled', false);
-					        } else {
-					            $(this).addClass('error');
-					        }
+          $('.loading').show();
+          //console.log('ajax1')
+          $.ajax({
+              type: 'POST',
+              url: listeo.ajaxurl,
+              data: form_data,
+              contentType: false,
+              processData: false,
+              success: function(data){
+                //console.log(data);
+              //console.log('I am fron core plugin');
+              //console.log(data);
+              var obj = jQuery.parseJSON( data );
+              //console.log(obj.type);
+              if(obj.type == "success") {
+                $(this).addClass('success');
+                //$('#send-message-from-chat textarea').val('');
+                $('#send-message-from-chat button').prop('disabled', false);
+                // $('.loading').show();
+                refreshMessages();
+                // $('.loading').hide();
+              } else {
+                $(this).addClass('error');
+              }
+            }
 
-					    }
-					});*/
-	            } else {
-	            	$(this).find('textarea#contact-message').addClass('error');
-	      		}
-	        }
+          });
+
+
+          /*$(this).find('textarea#contact-message').removeClass('error');
+          $('.loading').show();
+          $(this).find('button').prop('disabled', true);
+
+          $.ajax({
+              type: 'POST', dataType: 'json',
+              url: listeo.ajaxurl,
+              data: {
+                  'action': 'listeo_send_message_chat',
+                  'recipient' : $(this).find('input#recipient').val(),
+                  'conversation_id' : $(this).find('input#conversation_id').val(),
+                  'message' : message,
+                  //'nonce': nonce
+                 },
+              success: function(data){
+
+                  if(data.type == "success") {
+                      $(this).addClass('success');
+                      refreshMessages();
+                      $('#send-message-from-chat textarea').val('');
+                      $('#send-message-from-chat button').prop('disabled', false);
+                  } else {
+                      $(this).addClass('error');
+                  }
+
+              }
+          });*/
+              } else {
+                $(this).find('textarea#contact-message').addClass('error');
+            }
+          }
             e.preventDefault();
         });
 
@@ -2242,6 +2235,76 @@
 
     $("input[name='_menu[0][menu_elements][0][price]']").attr('step','1');
     $("input[name='_menu[0][menu_elements][0][price]']").attr('min','1');
+
+    $("body").on('click','#direct_fb_style_msg_btn',function(e){
+        e.preventDefault();
+        var direct_fb_style_recipient = $("#direct_fb_style_recipient").val();
+        var direct_fb_style_referral = $("#direct_fb_style_referral").val();
+        var direct_fb_style_msg = $("#direct_fb_style_msg").val();
+
+        if( direct_fb_style_msg != ""){
+            $.ajax({
+                type: 'POST', dataType: 'json',
+                url: listeo.ajaxurl,
+                data: {
+                    'action': 'listeo_direct_fb_style_msg',
+                    'direct_fb_style_recipient': direct_fb_style_recipient,
+                    'direct_fb_style_referral': direct_fb_style_referral,
+                    'direct_fb_style_msg': direct_fb_style_msg,
+                },
+                success: function(data){
+                    if(data.success == 1){
+                        $("#listeo_direct_fb_style_msg_success").show();
+                        $("#listeo_direct_fb_style_msg_success").css("color","#19b453");
+                        $("#listeo_direct_fb_style_msg_success").text(data.message);
+                        $("#direct_fb_style_msg").val('');
+                    }
+                    else{
+                        console.log(data.message);
+                    }
+                }
+            });
+        }
+        else{
+            $("#listeo_direct_fb_style_msg_success").show();
+            $("#listeo_direct_fb_style_msg_success").css("color","red");
+            $("#listeo_direct_fb_style_msg_success").text("Please enter your message");
+        }
+    });
+
+    $("body").on('click','#listeo_fb_style_unverify_msg',function(e){
+        e.preventDefault();
+        var direct_fb_style_msg = $("#direct_fb_style_msg").val();
+        var direct_fb_style_listing_id = $("#direct_fb_style_listing_id").val();
+
+        if( direct_fb_style_msg != ""){
+            $.ajax({
+                type: 'POST', dataType: 'json',
+                url: listeo.ajaxurl,
+                data: {
+                    'action': 'listeo_fb_style_unverify_msg',
+                    'direct_fb_style_msg': direct_fb_style_msg,
+                    'listing_id': direct_fb_style_listing_id,
+                },
+                success: function(data){
+                    if(data.success == 1){
+                        $("#listeo_direct_fb_style_msg_success").show();
+                        $("#listeo_direct_fb_style_msg_success").css("color","#19b453");
+                        $("#listeo_direct_fb_style_msg_success").text(data.message);
+                        $("#direct_fb_style_msg").val('');
+                    }
+                    else{
+                        console.log(data.message);
+                    }
+                }
+            });
+        }
+        else{
+            $("#listeo_direct_fb_style_msg_success").show();
+            $("#listeo_direct_fb_style_msg_success").css("color","red");
+            $("#listeo_direct_fb_style_msg_success").text("Please enter your message");
+        }
+    });
 
     })(this.jQuery);
     /**/

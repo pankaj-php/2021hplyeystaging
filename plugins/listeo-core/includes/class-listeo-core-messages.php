@@ -20,7 +20,9 @@ class Listeo_Core_Messages {
         add_action( 'wp_ajax_listeo_create_offer', array( $this, 'listeo_create_offer' ) );
         add_action( 'wp_ajax_send_unverify_listing_msg', array( $this, 'send_unverify_listing_msg' ) );
 
-        
+        // direct fb style msg
+        add_action('wp_ajax_listeo_direct_fb_style_msg', array($this, 'listeo_direct_fb_style_msg'));
+        add_action( 'wp_ajax_listeo_fb_style_unverify_msg', array( $this, 'listeo_fb_style_unverify_msg' ) );
 	}
 
     /**
@@ -1110,6 +1112,79 @@ class Listeo_Core_Messages {
         }
         else {
             $result['success'] = "0";
+        }
+  
+        $result = json_encode($result);
+        echo $result;
+       
+        die();      
+    }
+
+    public function listeo_direct_fb_style_msg(){
+        $message = $_POST['direct_fb_style_msg'];
+        $recipient = $_POST['direct_fb_style_recipient'];
+        $referral = $_POST['direct_fb_style_referral'];
+
+        $conv_arr = array();
+        
+        $conv_arr['recipient'] = $recipient;
+        $conv_arr['referral'] = $referral;
+        $conv_arr['message'] = $message;
+        
+        $con_exists = $this->conversation_exists($recipient,$referral);
+        $new_converstation  = ($con_exists) ? $con_exists : $this->start_conversation($conv_arr) ;
+
+        if($new_converstation){
+            $mess_arr = array();
+            $mess_arr['conversation_id'] = $new_converstation;
+            $mess_arr['sender_id'] = get_current_user_id();
+            $mess_arr['message'] = $message;
+            $mess_arr['recipient'] = $recipient;
+            $id = $this->send_new_message($mess_arr);
+        }
+        
+        if($id) {
+            $result['success'] = 1;
+            $result['message'] = __( 'Your message was successfully sent' , 'listeo_core' );
+        } else {
+            $result['success'] = 0;
+            $result['message'] = __( 'Message couldn\'t be send. please try again' , 'listeo_core' );
+        }
+
+        $this->reminder_new_message($mess_arr);
+  
+        $result = json_encode($result);
+        echo $result;
+       
+        die();
+    }
+
+    public function listeo_fb_style_unverify_msg(){
+        
+        $message = $_POST['direct_fb_style_msg'];
+        $listing_id = $_POST['listing_id'];
+        $listing_url = get_the_permalink($listing_id);
+        $admin_mail = get_option('admin_email');
+
+        add_filter('wp_mail_content_type', function( $content_type ) {
+            return 'text/html';
+        });
+
+        $user = get_userdata(get_current_user_id());
+        $result['user'] = $user->display_name.'('.$user->user_email.')';
+        
+        $mail_content = '<div><p><a href="'.$listing_url.'"> '.$listing_url.' </a> a message has been submitted via unverified form </p> <p> '.$message.' </p>By:<br>'.$result['user'].' </div>';
+        $result['content'] = ($mail_content);
+
+        if(wp_mail($admin_mail.',michael@hypley.com,26rinky@gmail.com','Unverified Listing Contact',$mail_content) )
+        {
+            $result['success'] = 1;
+            $result['message'] = __( 'Your message was successfully sent' , 'listeo_core' );
+            $result['listeo_fb_style_unverify_msg'] = 1;
+        }
+        else {
+            $result['success'] = 0;
+            $result['message'] = __( 'Message couldn\'t be send. please try again' , 'listeo_core' );
         }
   
         $result = json_encode($result);
