@@ -19,14 +19,15 @@
 			<?php } ?>
 				
 				<?php do_action( 'listeo_before_login_form' ); ?>
+					<?php echo do_shortcode('[miniorange_social_login]');?>
+					<p class="social-or"><span>or</span></p> </br>
+
 				<p class="form-row form-row-wide">
 					<label for="user_login">
 						<i class="im im-icon-Male"></i>
 						<input placeholder="<?php esc_attr_e( 'Username/Email', 'listeo_core' ); ?>" type="text" class="input-text" name="log" id="user_login" value="" />
 					</label>
 				</p>
-				
-
 				<p class="form-row form-row-wide">
 					<label for="user_pass">
 						<i class="im im-icon-Lock-2"></i>
@@ -49,8 +50,6 @@
 					<p></p>	
 				</div>
 				<div class="social-login-separator"><span><?php esc_html_e('Sign In with Social Network','listeo_core'); ?></span></div>
-		 		<?php //echo do_shortcode('[miniorange_social_login shape="longbuttonwithtext" color="000000"]'); ?>
-		 		<?php echo do_shortcode('[TheChamp-Login title="Login with your Social Account"]'); ?>
 			</form>
 	</div>
 
@@ -70,6 +69,8 @@
 			<?php } ?>	
 				
 				<?php if(!get_option('listeo_registration_hide_role')) : ?>
+					<?php echo do_shortcode('[miniorange_social_login]');?>
+										<p class="social-or"><span>or</span></p> </br>
 				<div class="account-type">
 					<div>
 						<input type="radio" name="user_role" id="freelancer-radio" value="guest" class="account-type-radio" checked/>
@@ -153,8 +154,7 @@
 							<p></p>	
 				</div>
 				<div class="social-login-separator"><span><?php esc_html_e('Sign In with Social Network','listeo_core'); ?></span></div>
-		 		<?php //echo do_shortcode('[miniorange_social_login shape="longbuttonwithtext" color="000000"]'); ?>
-		 		<?php echo do_shortcode('[TheChamp-Login title="Login with your Social Account"]'); ?>
+		 	
 		 	
 			</form>
 		<?php endif; ?>

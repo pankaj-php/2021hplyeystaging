@@ -173,3 +173,9 @@ jQuery(function($){
   });
 });
 </script>
+<script>
+	jQuery(function($){
+		 $(".mo-openid-app-icons a").removeAttr("style");
+	});
+
+</script>

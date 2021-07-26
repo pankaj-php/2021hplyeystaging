@@ -1572,7 +1572,7 @@ class Listeo_Core_Owner_Widget extends Listeo_Core_Widget {
 				<div class="new-list-btn">
 
 					<a href="#small-dialog" class="send-message-to-owner button popup-with-zoom-anim listeo_list_provider_meg_btn">
-						<?php esc_html_e('Message', 'listeo'); ?>
+						<?php esc_html_e('Contact', 'listeo'); ?>
 					</a>
 				</div>
 <div class="protect-payment">
@@ -1622,7 +1622,7 @@ class Listeo_Core_Owner_Widget extends Listeo_Core_Widget {
 			<!-- <p id="owner-widget-not-logged-in"><?php //printf( esc_html__( 'Please %s sign %s in to see contact details.', 'listeo_core' ), '<a href="#sign-in-dialog" class="sign-in popup-with-zoom-anim">', '</a>' ) ?></p> -->
 			<div class="new-list-btn">
 				<a href="#sign-in-dialog" class="send-message-to-owner button popup-with-zoom-anim listeo_list_provider_meg_btn sign_in_link" style="display:inline-block;">
-					<?php esc_html_e('Message', 'listeo'); ?>
+					<?php esc_html_e('Contact', 'listeo'); ?>
 				</a>
 			</div>
 <div class="protect-payment">
