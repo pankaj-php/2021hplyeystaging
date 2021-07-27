@@ -2318,6 +2318,22 @@ border-radius: 16px !important;
     content: "\f00d" !important;
 }
 
+/*Border section seprator*/
+.listing-desc-headline{
+    margin-top: 25px !important;
+}
+.listing-features{
+    margin-bottom: 15px;
+}
+.listeo_custom_sec_seprator{
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+.listeo_custom_sec_seprator hr{
+    border-top: 2px solid #ccc !important;
+    margin-top: 0px !important;
+}
+
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{
         display: none !important;
