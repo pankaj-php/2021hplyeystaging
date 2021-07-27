@@ -69,6 +69,7 @@
        //  });
 
       $('body').on('click', ".listeo_core-bookmark-it", function(e){
+          e.stopPropagation();
           e.preventDefault();
           if($(this).is('.clicked,.liked')){
             return;
@@ -104,6 +105,7 @@
       });
 
       $('body').on('click', ".listeo_core-unbookmark-it", function(e){
+          e.stopPropagation();
           e.preventDefault();
           var handler = $(this);
           var post_id = $(this).data("post_id");
@@ -2304,6 +2306,24 @@
             $("#listeo_direct_fb_style_msg_success").css("color","red");
             $("#listeo_direct_fb_style_msg_success").text("Please enter your message");
         }
+    });
+
+    $("body").on('click','.listeo_grid_view_item',function(e){
+        var url = $(this).data('link');
+        window.open(url, '_blank');
+    });
+
+    $("body").on('click','.slick-prev',function(e){
+          e.stopPropagation();
+    });
+    $("body").on('click','.slick-next',function(e){
+          e.stopPropagation();
+    });
+    $("body").on('click','.popup-with-zoom-anim',function(e){
+          e.stopPropagation();
+    });
+    $("body").on('click','.like-icon',function(e){
+          e.stopPropagation();
     });
 
     })(this.jQuery);
