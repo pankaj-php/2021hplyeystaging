@@ -30,7 +30,7 @@
 	}
 
 	if($features){
-		?> <h3 class="listing-desc-headline"><?php esc_html_e('Features','listeo_core'); ?></h3> <?php
+		?> <div class="listeo_custom_sec_seprator"><hr></div> <h3 class="listing-desc-headline"><?php esc_html_e('Features','listeo_core'); ?></h3> <?php
 		echo '<ul class="listing-features checkboxes margin-top-0">';
 		$is_listing_feature_checked = "listing_feature_not_checked";
 		foreach ($features as $feature) {

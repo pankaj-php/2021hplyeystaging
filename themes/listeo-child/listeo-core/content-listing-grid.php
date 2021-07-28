@@ -30,7 +30,7 @@
    ?>
 <div class="listing-item-container listing-geo-data listo-main-box-sec"  <?php echo listeo_get_geo_data($post); ?> data-minPrice="<?=$cristian_min_price?>">
    <!--<a href="<?php //the_permalink(); ?>" class="listing-item-container listing-geo-data"  <?php echo listeo_get_geo_data($post); ?>>-->
-   <div class="listing-item listeo_grid_view_item listo-list-iteam <?php if($is_featured){ ?>featured-listing<?php } ?>">
+   <div data-link="<?php the_permalink(); ?>" class="listing-item listeo_grid_view_item listo-list-iteam <?php if($is_featured){ ?>featured-listing<?php } ?>">
       <div class="listing-small-badges-container listo-new-container">
          <?php if($is_featured){ ?>
          <div class="listing-small-badge featured-badge listeo-featured-listing-box">
