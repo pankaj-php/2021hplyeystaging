@@ -20,7 +20,9 @@ $related_args = array(
 $related_query = new wp_query($related_args);
 	
 if( $related_query->have_posts() ) {
-   	?> <h3 style="margin-left: 5px;"> You may also like </h3> <div class="listings-container grid-layout row"> <div data-grid_columns="3" data-style="grid" id="listeo-listings-container"> <?php
+   	?> 
+    <div class="listeo_custom_sec_seprator related_listing_sep"><hr></div>
+    <h3 style="margin-left: 5px;"> You may also like </h3> <div class="listings-container grid-layout row"> <div data-grid_columns="3" data-style="grid" id="listeo-listings-container"> <?php
    	while ( $related_query->have_posts() ) { $related_query->the_post(); ?>
    		<div class="col-lg-4 col-md-6">
             <div class="listing-item-container listing-geo-data listo-main-box-sec">
