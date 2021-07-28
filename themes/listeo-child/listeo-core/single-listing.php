@@ -364,6 +364,29 @@ else: ?>
 								?>
 						</div>
 					</div>
+
+					<!-- User profile status start -->
+
+					<div class="boxed-widget margin-top-30 margin-bottom-50 verification-section bad-sec">
+					<?php					
+					
+					$udata = get_userdata($owner_id);
+					$registered = $udata->user_registered;
+					?>
+					
+					<p class="mem-bdg">Joined on <?php echo date( 'F d Y', strtotime($registered));?></p>	
+						<?php								
+							if (  $udata->user_status == 1  ) 
+								echo '<p class="ver-ico em-ic">Email Verified</p>';					
+							else	
+								echo '<p class="nt-ver em-ic">Email Not Verified</p>';
+							
+							?>						
+					</div>
+
+					<!-- User profile status end -->
+
+
 					<div>
 						<?php if ( is_active_sidebar( 'single_unveryfie_siderbar' ) ) : ?>
 								<?php dynamic_sidebar( 'single_unveryfie_siderbar' ); ?>
@@ -389,6 +412,9 @@ else: ?>
 			<?php $template_loader->get_template_part( 'single-partials/single-listing','related' ); ?>
 		</div>
 	</div>
+
+
+
 </div>
 
 
