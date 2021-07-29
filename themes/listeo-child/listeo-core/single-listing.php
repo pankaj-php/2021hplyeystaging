@@ -397,6 +397,8 @@ else: ?>
 
 		</div>
 		<!-- Sidebar / End -->
+		
+
 		<?php 
 			if(isMobile()) {
 		?>
@@ -408,13 +410,8 @@ else: ?>
 			<?php if(!get_option('listeo_disable_reviews')){ 
 				$template_loader->get_template_part( 'single-partials/single-listing','reviews' ); } ?>
 		</div>
-		<div class="listeo-related-listing">
-			<?php $template_loader->get_template_part( 'single-partials/single-listing','related' ); ?>
-		</div>
-	</div>
 
-
-	<!-- Google Reviews start -->
+		<!-- Google Reviews start -->
 <?php
 
   $place_id = get_post_meta($post->ID,'place_id', true);
@@ -452,10 +449,11 @@ if(!empty($place_id)){
 	?>
 	        </span>
 	    </div>
+	    <?php /*
 	    <div class="google-reviews-read-more">
 	        <a href="https://search.google.com/local/writereview?placeid=<?php echo $place_id; ?>" target="_blank"><img src="<?php echo get_site_url(); ?>/wp-content/themes/listeo-child/img/google-reviews-button-icon.svg" alt=""><?php esc_html_e('Add Review','listeo_core'); ?></a>
 	    </div>
-	    
+	    */?>
 	</div>
 	
     <section class="comments listing-reviews">
@@ -468,7 +466,7 @@ if(!empty($place_id)){
             		
             			<div class="comment-by">
             				
-            				<h5><a href="<?php echo esc_url($review['author_url']); ?>" target="_blank"> <?php echo $review['author_name'];  ?></a></h5> 
+            				<h5><a href="javascript:void(0);"> <?php echo $review['author_name'];  ?></a></h5> 
             		        <span class="date"><?php echo esc_attr($review['relative_time_description']); ?></span>
     			        	<div class="star-rating" data-rating="<?php echo esc_attr($review['rating']); ?>"></div>
             			</div>
@@ -481,14 +479,22 @@ if(!empty($place_id)){
     
       
     </section>
-	    <div class="google-reviews-read-more bottom">
+	  <?php /*  <div class="google-reviews-read-more bottom">
 	        <a href="https://search.google.com/local/reviews?placeid=<?php echo $place_id ?>" target="_blank"><img src="<?php echo get_site_url(); ?>/wp-content/themes/listeo-child/img/google-reviews-logo.svg" alt=""><?php esc_html_e('Read More Reviews','listeo_core'); ?></a>
-	    </div>
+	    </div> */?>
 	  </div>
 <?php } ?>
 
 
 <!-- Google Reviews end -->
+		
+		<div class="listeo-related-listing">
+			<?php $template_loader->get_template_part( 'single-partials/single-listing','related' ); ?>
+		</div>
+	</div>
+
+
+	
 
 
 </div>
