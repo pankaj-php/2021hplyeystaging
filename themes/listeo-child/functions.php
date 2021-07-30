@@ -504,3 +504,65 @@ function secondsToResponseTime($ss) {
 	}
 	return $time;
 }
+
+
+class itf_widget extends WP_Widget {
+  
+function __construct() {
+parent::__construct(
+  
+'itf_widget', 
+  
+__('User status'), 
+  
+array( 'description' => __( 'Used to display the user email status and joined date' ), ) 
+);
+}
+  
+  
+public function widget( $args, $instance ) {
+
+global $post;
+  
+?>
+	<div class="boxed-widget margin-top-30 margin-bottom-50 verification-section bad-sec">
+				<?php
+				
+				$udata = get_userdata($post->post_author);
+				$registered = $udata->user_registered;
+				?>
+				
+				<p class="mem-bdg">Joined on <?php echo date( 'F d Y', strtotime($registered));?></p>	
+					<?php
+			
+						if (  $udata->user_status == 1  ) {
+						echo '<p class="ver-ico em-ic">Email Verified</p>';
+					}else{
+							
+						echo '<p class="nt-ver em-ic">Email Not Verified</p>';
+						}
+						?>
+						
+			</div>
+<?php    
+
+}
+ 
+} 
+  
+function itf_load_widget() {
+    register_widget( 'itf_widget' );
+}
+add_action( 'widgets_init', 'itf_load_widget' );
+
+function listeo_get_google_reviews($place_id,$post){
+	
+		$api_key = 'AIzaSyBYyQNdgo1GZ-f8x9ntJrZ1RWDrHjIo4Rk';
+		
+		$url = "https://maps.googleapis.com/maps/api/place/details/json?key={$api_key}&placeid={$place_id}";
+		$resp_json = wp_remote_get($url);
+		
+		$reviews = json_decode( wp_remote_retrieve_body( $resp_json ), true );		
+		
+	return $reviews;
+}

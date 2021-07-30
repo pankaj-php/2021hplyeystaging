@@ -364,6 +364,29 @@ else: ?>
 								?>
 						</div>
 					</div>
+
+					<!-- User profile status start -->
+
+					<div class="boxed-widget margin-top-30 margin-bottom-50 verification-section bad-sec">
+					<?php					
+					
+					$udata = get_userdata($owner_id);
+					$registered = $udata->user_registered;
+					?>
+					
+					<p class="mem-bdg">Joined on <?php echo date( 'F d Y', strtotime($registered));?></p>	
+						<?php								
+							if (  $udata->user_status == 1  ) 
+								echo '<p class="ver-ico em-ic">Email Verified</p>';					
+							else	
+								echo '<p class="nt-ver em-ic">Email Not Verified</p>';
+							
+							?>						
+					</div>
+
+					<!-- User profile status end -->
+
+
 					<div>
 						<?php if ( is_active_sidebar( 'single_unveryfie_siderbar' ) ) : ?>
 								<?php dynamic_sidebar( 'single_unveryfie_siderbar' ); ?>
@@ -374,6 +397,8 @@ else: ?>
 
 		</div>
 		<!-- Sidebar / End -->
+		
+
 		<?php 
 			if(isMobile()) {
 		?>
@@ -385,10 +410,93 @@ else: ?>
 			<?php if(!get_option('listeo_disable_reviews')){ 
 				$template_loader->get_template_part( 'single-partials/single-listing','reviews' ); } ?>
 		</div>
+
+		<!-- Google Reviews start -->
+<?php
+
+  $place_id = get_post_meta($post->ID,'place_id', true);
+
+$greviews  = array();
+if(!empty($place_id)){
+	$place_data = listeo_get_google_reviews($place_id,$post);
+	if(empty($place_data['result']['reviews'])){
+		$greviews  = array();
+	} else {
+		$greviews = $place_data['result']['reviews'];	
+	}
+}
+
+?>
+
+    <?php
+	if(isset($greviews) && !empty($greviews) && count($greviews) > 0){?>
+
+<div id="listing-google-reviews" class="listing-section">
+	<h3 class="listing-desc-headline margin-top-75 margin-bottom-20"><?php esc_html_e('Google Reviews','listeo_core'); ?></h3>
+	
+	<div class="google-reviews-summary">
+	    <div class="google-reviews-summary-logo"></div>
+	    <div class="google-reviews-summary-avg">
+	        <strong><?php echo number_format_i18n($place_data['result']['rating'],1); ?></strong>
+	        <div class="star-rating" data-rating="<?php echo $place_data['result']['rating']; ?>"></div>
+	        <span>
+<?php
+		$google_reviews_count = $place_data['result']['user_ratings_total'];
+		printf( // WPCS: XSS OK.
+			esc_html( _nx(  'Review %1$s','%1$s reviews', $google_reviews_count, 'comments title', 'listeo_core' ) ),
+			 number_format_i18n(  $google_reviews_count )
+		);
+	?>
+	        </span>
+	    </div>
+	    <?php /*
+	    <div class="google-reviews-read-more">
+	        <a href="https://search.google.com/local/writereview?placeid=<?php echo $place_id; ?>" target="_blank"><img src="<?php echo get_site_url(); ?>/wp-content/themes/listeo-child/img/google-reviews-button-icon.svg" alt=""><?php esc_html_e('Add Review','listeo_core'); ?></a>
+	    </div>
+	    */?>
+	</div>
+	
+    <section class="comments listing-reviews">
+    	<ul class="comment-list">
+    		<?php  foreach ($greviews as $key => $review) { ?>
+    			<li>
+    
+                   	<div class="avatar"><img src="<?php echo esc_attr($review['profile_photo_url']); ?>" alt="<?php echo $review['author_name'];  ?>"></div>
+            		<div class="comment-content"><div class="arrow-comment"></div>
+            		
+            			<div class="comment-by">
+            				
+            				<h5><a href="javascript:void(0);"> <?php echo $review['author_name'];  ?></a></h5> 
+            		        <span class="date"><?php echo esc_attr($review['relative_time_description']); ?></span>
+    			        	<div class="star-rating" data-rating="<?php echo esc_attr($review['rating']); ?>"></div>
+            			</div>
+            			<p>	<?php echo $review['text']; ?></p>
+                    </div>
+    
+    			</li>
+     		<?php } ?>
+    	</ul>
+    
+      
+    </section>
+	  <?php /*  <div class="google-reviews-read-more bottom">
+	        <a href="https://search.google.com/local/reviews?placeid=<?php echo $place_id ?>" target="_blank"><img src="<?php echo get_site_url(); ?>/wp-content/themes/listeo-child/img/google-reviews-logo.svg" alt=""><?php esc_html_e('Read More Reviews','listeo_core'); ?></a>
+	    </div> */?>
+	  </div>
+<?php } ?>
+
+
+<!-- Google Reviews end -->
+		
 		<div class="listeo-related-listing">
 			<?php $template_loader->get_template_part( 'single-partials/single-listing','related' ); ?>
 		</div>
 	</div>
+
+
+	
+
+
 </div>
 
 
