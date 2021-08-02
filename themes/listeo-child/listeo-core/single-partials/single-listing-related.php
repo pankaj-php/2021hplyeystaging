@@ -2,33 +2,54 @@
 
 $listing_cats = get_the_terms( $post->ID, 'listing_category' );
 $listing_cats_slugs = wp_list_pluck( $listing_cats, 'slug' );
+$related_args1 = array(
+    'post_type' => 'listing',
+    'posts_per_page' => 4,
+    'post_status' => 'publish',
+    'post__not_in' => array( $post->ID ),
+    'orderby' => 'rand',
+    'tax_query' => array(
+        array(
+            'taxonomy' => 'listing_category',
+            'field' => 'slug',
+            'terms' => $listing_cats_slugs
+        )
+    )
+);
 $related_args = array(
-	'post_type' => 'listing',
-	'posts_per_page' => 4,
-	'post_status' => 'publish',
-	'post__not_in' => array( $post->ID ),
-	'orderby' => 'rand',
-	'tax_query' => array(
-		array(
-			'taxonomy' => 'listing_category',
-			'field' => 'slug',
-			'terms' => $listing_cats_slugs
-		)
-	)
+    'post_type' => 'listing',
+    'posts_per_page' => 4,
+    'post_status' => 'publish',
+    'post__not_in' => array( $post->ID ),
+    'orderby' => 'rand',
+    'tax_query' => array(
+        array(
+            'taxonomy' => 'listing_category',
+            'field' => 'slug',
+            'terms' => $listing_cats_slugs
+        )
+    ),
+    'meta_query' => array(
+        array(
+            'key'       => '_verified',
+            'value'     => 'on',
+            'compare'   => '=',
+        )
+    ),
 );
 
 $related_query = new wp_query($related_args);
-	
+    
 if( $related_query->have_posts() ) {
-   	?> 
+    ?> 
     <div class="listeo_custom_sec_seprator related_listing_sep"><hr></div>
     <h3 style="margin-left: 5px;"> You may also like </h3> <div class="listings-container grid-layout row"> <div data-grid_columns="3" data-style="grid" id="listeo-listings-container"> <?php
-   	while ( $related_query->have_posts() ) { $related_query->the_post(); ?>
-   		<div class="col-lg-4 col-md-6">
+    while ( $related_query->have_posts() ) { $related_query->the_post(); ?>
+        <div class="col-lg-4 col-md-6">
             <div class="listing-item-container listing-geo-data listo-main-box-sec">
-                <div class="listing-item listeo_grid_view_item listo-list-iteam " style="height: 380.972px;">
+                <div data-link="<?php the_permalink(); ?>" class="listing-item listeo_grid_view_item listo-list-iteam " style="height: 380.972px;">
                     <a target="_blank" href="<?php the_permalink(); ?>">
-						
+                        
                         <?php $gallery = get_post_meta( $post->ID, '_gallery', true ); 
                         foreach ( (array) $gallery as $attachment_id => $attachment_url ) {
                             $image = wp_get_attachment_image_src( $attachment_id, 'listeo-gallery' );
@@ -36,9 +57,9 @@ if( $related_query->have_posts() ) {
                         }
                         ?>
                         <img class="listeo_liting_single_galary_image listeo_liting_single_image" src="<?php echo $image[0]; ?>">
-					</a>
-					
-					<div class="listing-item-content listo-new-listing-iteam <?php echo "post - ".$post->ID; ?>">
+                    </a>
+                    
+                    <div class="listing-item-content listo-new-listing-iteam <?php echo "post - ".$post->ID; ?>">
                         
                         <?php
                         if(!get_option('listeo_disable_reviews'))
@@ -113,8 +134,8 @@ if( $related_query->have_posts() ) {
                 </div>
             </div>
         </div>
-	<?php } 
-	?> </div> </div> <?php
+    <?php } 
+    ?> </div> </div> <?php
 }
 
 $post = $backup;
