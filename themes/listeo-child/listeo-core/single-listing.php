@@ -377,11 +377,11 @@ else: ?>
 					<p class="mem-bdg">Joined on <?php echo date( 'F d Y', strtotime($registered));?></p>	
 						<?php								
 							if (  $udata->user_status == 1  ) 
-								echo '<p class="ver-ico em-ic">Email Verified</p>';					
-							else	
-								echo '<p class="nt-ver em-ic">Email Not Verified</p>';
+								echo '<p class="em-ic">Email Verified</p>';	
+
+							?>
 							
-							?>						
+												
 					</div>
 
 					<!-- User profile status end -->
