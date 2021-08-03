@@ -521,31 +521,27 @@ array( 'description' => __( 'Used to display the user email status and joined da
   
   
 public function widget( $args, $instance ) {
-
-global $post;
-  
+   global $post;
 ?>
 	<div class="boxed-widget margin-top-30 margin-bottom-50 verification-section bad-sec">
-				<?php
-				
-				$udata = get_userdata($post->post_author);
-				$registered = $udata->user_registered;
+				<?php				
+					$udata = get_userdata($post->post_author);
+					$registered = $udata->user_registered;
 				?>
 				
 				<p class="mem-bdg">Joined on <?php echo date( 'F d Y', strtotime($registered));?></p>	
-					<?php
-			
-						if (  $udata->user_status == 1  ) {
-						echo '<p class="ver-ico em-ic">Email Verified</p>';
-					}else{
-							
-						echo '<p class="nt-ver em-ic">Email Not Verified</p>';
-						}
-						?>
+					<?php				
 						
-			</div>
-<?php    
+						if (  $udata->user_status == 1  ) {
+						echo '<p class="em-ic">Email Verified</p>';
+					}  
+		   				?>
+	 </div>
+					
 
+<?php
+     
+echo $args['after_widget'];
 }
  
 } 

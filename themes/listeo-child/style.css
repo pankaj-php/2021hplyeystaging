@@ -2463,7 +2463,7 @@ border-radius: 16px !important;
     float: right;
     padding-right: 0px;}
 
-p.mem-bdg:before {content: "";background-image: url("/wp-content/themes/listeo-child/img/bookmark.png");
+p.mem-bdg:before {content: "";background-image: url("/wp-content/themes/listeo-child/img/security-star-green.png");
     height: 23px;
     width: 25px;
     position: relative;
@@ -2613,3 +2613,29 @@ p.mem-bdg {
 }
  
 /* Google Reviews end */
+
+.high_rate i.fa.fa-star {
+    font-size: 20px;
+    padding-right: 9px;
+        color: #30da22;
+
+}
+
+p.em-ic{
+     font-size: 16px;
+
+        padding-right: 10px;
+
+}
+.em-ic:before {
+ font-size: 18px;
+    padding: 0 9px 0 0;
+}
+.fa-star:before {
+    content: "\f005";
+    color: #30da22;
+}
+p.mem-bdg:before {
+   margin-left: -3px;
+   margin-right: 6px;
+}
