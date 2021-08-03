@@ -535,7 +535,30 @@ public function widget( $args, $instance ) {
 						if (  $udata->user_status == 1  ) {
 						echo '<p class="em-ic">Email Verified</p>';
 					}  
-		   				?>
+		   				$total_visitor_reviews_args = array(
+									'post_author' 	=> $udata->ID,
+									'parent'      	=> 0,
+									'status' 	  	=> 'approve',
+									'post_type'   	=> 'listing',
+									'orderby' 		=> 'post_date' ,
+		            				'order' 		=> 'DESC',
+								);
+
+								$total_visitor_reviews = get_comments( $total_visitor_reviews_args ); 
+								$review_total = 0;
+								$review_count = 0;
+								foreach($total_visitor_reviews as $review) {
+									if( get_comment_meta( $review->comment_ID, 'listeo-rating', true ) ) {
+									 $review_total = $review_total + (int) get_comment_meta( $review->comment_ID, 'listeo-rating', true );
+									 $review_count++;
+									}
+								}
+
+					            $twenty=20;
+		                        if($review_count > $twenty){
+								echo '<div id="high_rate_div"><p class="high_rate"><i class="fa fa-star" aria-hidden="true"></i>Highly Rated</p></div>';
+		                        }
+							 ?>
 	 </div>
 					
 
