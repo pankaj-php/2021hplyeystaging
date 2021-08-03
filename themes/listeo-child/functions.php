@@ -521,31 +521,50 @@ array( 'description' => __( 'Used to display the user email status and joined da
   
   
 public function widget( $args, $instance ) {
-
-global $post;
-  
+   global $post;
 ?>
 	<div class="boxed-widget margin-top-30 margin-bottom-50 verification-section bad-sec">
-				<?php
-				
-				$udata = get_userdata($post->post_author);
-				$registered = $udata->user_registered;
+				<?php				
+					$udata = get_userdata($post->post_author);
+					$registered = $udata->user_registered;
 				?>
 				
 				<p class="mem-bdg">Joined on <?php echo date( 'F d Y', strtotime($registered));?></p>	
-					<?php
-			
-						if (  $udata->user_status == 1  ) {
-						echo '<p class="ver-ico em-ic">Email Verified</p>';
-					}else{
-							
-						echo '<p class="nt-ver em-ic">Email Not Verified</p>';
-						}
-						?>
+					<?php				
 						
-			</div>
-<?php    
+						if (  $udata->user_status == 1  ) {
+						echo '<p class="em-ic">Email Verified</p>';
+					}  
+		   				$total_visitor_reviews_args = array(
+									'post_author' 	=> $udata->ID,
+									'parent'      	=> 0,
+									'status' 	  	=> 'approve',
+									'post_type'   	=> 'listing',
+									'orderby' 		=> 'post_date' ,
+		            				'order' 		=> 'DESC',
+								);
 
+								$total_visitor_reviews = get_comments( $total_visitor_reviews_args ); 
+								$review_total = 0;
+								$review_count = 0;
+								foreach($total_visitor_reviews as $review) {
+									if( get_comment_meta( $review->comment_ID, 'listeo-rating', true ) ) {
+									 $review_total = $review_total + (int) get_comment_meta( $review->comment_ID, 'listeo-rating', true );
+									 $review_count++;
+									}
+								}
+
+					            $twenty=20;
+		                        if($review_count > $twenty){
+								echo '<div id="high_rate_div"><p class="high_rate"><i class="fa fa-star" aria-hidden="true"></i>Highly Rated</p></div>';
+		                        }
+							 ?>
+	 </div>
+					
+
+<?php
+     
+echo $args['after_widget'];
 }
  
 } 
