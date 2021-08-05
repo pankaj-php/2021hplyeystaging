@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) )
  * Listeo_Core_Listing class
  */
 class Listeo_Core_Listing {
-	
+
 	private static $_instance = null;
 
 	public function __construct () {
@@ -15,7 +15,7 @@ class Listeo_Core_Listing {
 	}
 
 
-	
+
 	/**
 	 * add_query_vars()
 	 *
@@ -26,11 +26,11 @@ class Listeo_Core_Listing {
 	 * @since 1.0.0
 	 */
 	public function add_query_vars($vars) {
-		
+
 		$new_vars = array();
 
         array_push($new_vars, 'date_range', 'keyword_search','location_search','listeo_core_order','search_radius','radius_type');
-	
+
 	    $vars = array_merge( $new_vars, $vars );
 		return $vars;
 
@@ -41,32 +41,32 @@ class Listeo_Core_Listing {
 		global $wpdb;
 
 		global $paged;
-		
+
 		if(isset($args['listeo_orderby'])) {
 			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args($args['listeo_orderby']);
-			
+
 		} else {
-			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args( );	
+			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args( );
 		}
-		
-		
-		
+
+
+
 		if ( get_query_var( 'paged' ) ) { $paged = get_query_var( 'paged' ); }
 		elseif ( get_query_var( 'page' ) ) { $paged = get_query_var( 'page' ); }
 		else { $paged = 1; }
-	
+
 		$search_radius_var = get_query_var( 'search_radius' );
 		if(!empty($search_radius_var)) { $args['search_radius'] = $search_radius_var;	}
 
 		$radius_type_var = get_query_var( 'radius_type' );
 		if(!empty($radius_type_var)) {	$args['radius_type'] = $radius_type_var;	}
-				
+
 		$keyword_var = get_query_var( 'keyword_search' );
 		if(!empty($keyword_var)) {	$args['keyword'] = $keyword_var;	}
-		
+
 		$location_var = get_query_var( 'location_search' );
 		if(!empty($location_var)) {	$args['location'] = $location_var;	}
-		
+
 		$query_args = array(
 			'query_label' 			 => 'listeo_get_listing_query',
 			'post_type'              => 'listing',
@@ -74,12 +74,27 @@ class Listeo_Core_Listing {
 			'ignore_sticky_posts'    => 1,
 			'paged' 		 		 => $paged,
 			'posts_per_page'         => intval( $args['posts_per_page'] ),
-			'orderby'                => $ordering_args['orderby'],
+			'orderby'                => 'meta_value '.$ordering_args['orderby'],
 			'order'                  => $ordering_args['order'],
 			'tax_query'              => array(),
 			'meta_query'             => array(),
 		);
 
+
+
+		$query_args['meta_query'][] = array(
+			'relation' => 'OR',
+			array(
+					'key' => '_verified',
+					'compare' => '=',
+					'value' => 'on'
+				),
+			array(
+					'key' => '_verified',
+					'value' => 'on',
+					'compare' => 'NOT EXISTS'
+				)
+		);
 
 		if(isset($args['offset'])){
 			$query_args['offset'] = $args['offset'];
@@ -104,7 +119,7 @@ class Listeo_Core_Listing {
 				$postmeta_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keywords[0] ) . "%' ";
 				// Create post title and content SQL
 				$posts_keywords_sql[]    = " post_title LIKE '%" . esc_sql( $keywords[0] ) . "%' OR post_content LIKE '%" . esc_sql(  $keywords[0] ) . "%' ";
-					
+
 				// Get post IDs from post meta search
 
 				$post_ids = $wpdb->get_col( "
@@ -118,11 +133,11 @@ class Listeo_Core_Listing {
 				    SELECT ID FROM {$wpdb->posts}
 				    WHERE ( " . implode( ' OR ', $posts_keywords_sql ) . " )
 				    AND post_type = 'listing'
-				   
+
 				" ), array( 0 ) );
 				/* array( 0 ) is set to return no result when no keyword was found */
 		}
-		
+
 		if ( isset($args['location']) && !empty($args['location']) ) {
 			$radius = $args['search_radius'];
 
@@ -131,13 +146,13 @@ class Listeo_Core_Listing {
 			//  }
 			$radius_type = get_option('listeo_radius_unit','km');
 			$radius_api_key = get_option( 'listeo_maps_api_server' );
-		
+
 			if(!empty($args['location']) && !empty($radius) && !empty($radius_api_key)) {
 				//search by google
-				
+
 				$latlng = listeo_core_geocode($args['location']);
-				
-				$nearbyposts = listeo_core_get_nearby_listings($latlng[0], $latlng[1], $radius, $radius_type ); 
+
+				$nearbyposts = listeo_core_get_nearby_listings($latlng[0], $latlng[1], $radius, $radius_type );
 
 				listeo_core_array_sort_by_column($nearbyposts,'distance');
 				$location_post_ids = array_unique(array_column($nearbyposts, 'post_id'));
@@ -147,7 +162,7 @@ class Listeo_Core_Listing {
 				}
 
 			} else {
-				
+
 				$locations = array_map( 'trim', explode( ',', $args['location'] ) );
 
 				// Setup SQL
@@ -163,7 +178,7 @@ class Listeo_Core_Listing {
 					// Create post title and content SQL
 					$posts_locations_sql[]    = " post_title LIKE '%" . esc_sql( $locations[0] ) . "%' OR post_content LIKE '%" . esc_sql(  $locations[0] ) . "%' ";
 				}
-					
+
 				// Get post IDs from post meta search
 
 				$post_ids = $wpdb->get_col( "
@@ -181,23 +196,23 @@ class Listeo_Core_Listing {
 					    WHERE ( " . implode( ' OR ', $posts_locations_sql ) . " )
 					    AND post_type = 'listing'
 					    AND post_status = 'publish'
-					   
+
 					" ), array( 0 ) );
 				}
-					
-				
+
+
 			}
 		}
-	
+
 		if ( sizeof( $keywords_post_ids ) != 0 && sizeof( $location_post_ids ) != 0 ) {
 			$post_ids = array_intersect($keywords_post_ids, $location_post_ids);
 			if(!empty($post_ids)){
-				$query_args['post__in'] = $post_ids;	
+				$query_args['post__in'] = $post_ids;
 			} else {
-			    
+
 			    $query_args['post__in'] = array(0);
 			}
-			
+
 		} else if (sizeof( $keywords_post_ids ) != 0 && sizeof( $location_post_ids ) == 0) {
 			$query_args['post__in'] = $keywords_post_ids;
 		} else if (sizeof( $keywords_post_ids ) == 0 && sizeof( $location_post_ids ) != 0) {
@@ -209,37 +224,37 @@ class Listeo_Core_Listing {
 		  //       $date_end =  str_replace("/", "-", 	$args['date_end']);
 			 	$date_start =   $args['date_start'];
 		        $date_end =   	$args['date_end'];
-		        
+
 		        $date_start = esc_sql ( date( "Y-m-d H:i:s", strtotime( $wpdb->esc_like( $date_start ) ) ) );
 	            $date_end = esc_sql ( date( "Y-m-d H:i:s", strtotime( $wpdb->esc_like( $date_end ) ) ) );
-	            
-				$posts_not_ids = 
-				$wpdb->get_col( 
-						$wpdb->prepare( 
-							"SELECT listing_id 
-			            	FROM {$wpdb->prefix}bookings_calendar 
-			            	WHERE 
-				            	( %s >= date_start AND %s <= date_end ) 
-				            	OR 
-				            	( %s >= date_start AND %s <= date_end ) 
-				            	OR 
+
+				$posts_not_ids =
+				$wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT listing_id
+			            	FROM {$wpdb->prefix}bookings_calendar
+			            	WHERE
+				            	( %s >= date_start AND %s <= date_end )
+				            	OR
+				            	( %s >= date_start AND %s <= date_end )
+				            	OR
 				            	( date_start >= %s AND date_end <= %s )
-				            GROUP BY listing_id 
+				            GROUP BY listing_id
 			            	",
-			            	$date_start, 
 			            	$date_start,
-			            	$date_end, 
-			            	$date_end, 
-			            	$date_start, 
+			            	$date_start,
+			            	$date_end,
+			            	$date_end,
+			            	$date_start,
 			            	$date_end
 			        )
 	        	);
- 
+
 				$query_args['post__not_in'] = $posts_not_ids;
-			
+
 
 		}
-	
+
 
 		$query_args['tax_query'] = array(
 	        'relation' => 'AND',
@@ -248,8 +263,8 @@ class Listeo_Core_Listing {
 
 
         foreach ($taxonomy_objects as $tax) {
-        	
-        	
+
+
 			$get_tax = false;
 			if((isset($_GET['tax-'.$tax->name]) && !empty($_GET['tax-'.$tax->name]))) {
 				$get_tax = $_GET['tax-'.$tax->name];
@@ -258,21 +273,21 @@ class Listeo_Core_Listing {
 					$get_tax = $args['tax-'.$tax->name] ;
 
 				}
-				
+
 			}
 
         	if(is_array($get_tax)){
-        		
+
         		$query_args['tax_query'][$tax->name] = array('relation'=> get_option('listeo_taxonomy_or_and','OR'));
         		foreach ($get_tax as $key => $value) {
 		    		array_push($query_args['tax_query'][$tax->name], array(
 			           'taxonomy' =>   $tax->name,
 			           'field'    =>   'slug',
 			           'terms'    =>   $value,
-			           
+
 			        ));
 		    	}
-		    	
+
         	} else {
 
             	if( $get_tax ){
@@ -284,7 +299,7 @@ class Listeo_Core_Listing {
 					           'field'    =>  'slug',
 					           'terms'    =>  $term->slug,
 					           'operator' =>  'IN'
-					        ));	
+					        ));
 				    	}
             		} else {
             			$get_tax_array = explode(',',$get_tax);
@@ -293,21 +308,21 @@ class Listeo_Core_Listing {
 					           'taxonomy' =>  $tax->name,
 					           'field'    =>  'slug',
 					           'terms'    =>  $get_tax_array,
-					           
-					        ));	
+
+					        ));
             		}
-			    	
-			    	
+
+
 			    }
 		 	}
-		 	
+
         }
-     
+
 		$available_query_vars = Listeo_Core_Search::build_available_query_vars();
 		$meta_queries = array();
 		$available_query_vars[] = 'featured';
 
-			
+
 		foreach ($available_query_vars as $key => $meta_key) {
 			if( substr($meta_key,0, 4) == "tax-") {
 				continue;
@@ -316,7 +331,7 @@ class Listeo_Core_Listing {
 				continue;
 			}
 			if($meta_key == '_price'){
-					
+
 					$meta = false;
 					if(!empty(get_query_var( '_price_range' ))){
 						$meta = get_query_var( '_price_range' );
@@ -324,7 +339,7 @@ class Listeo_Core_Listing {
 						$meta = $args['_price_range'];
 					}
 					if(!empty($meta)){
-						
+
 						$range = array_map( 'absint', explode( ',', $meta ) );
 
 						$query_args['meta_query'][] = array(
@@ -343,7 +358,7 @@ class Listeo_Core_Listing {
 		                                'compare' => 'BETWEEN',
 		                                'type' => 'NUMERIC',
 		                            ),
-						 
+
 						        ),
 						        array(
 						            'relation' => 'AND',
@@ -359,20 +374,20 @@ class Listeo_Core_Listing {
 		                                'compare' => '>=',
 		                                'type' => 'NUMERIC',
 		                            ),
-						 
+
 						        ),
 				        );
-				       
+
 			        }
 			} else {
 				if (substr($meta_key, -4) == "_min" || substr($meta_key, -4) == "_max") { continue; }
 				$meta = false;
-				
-				
+
+
 				if(!empty(get_query_var( $meta_key ))){
 					$meta = get_query_var( $meta_key );
 				} else if(isset($args[$meta_key] )){
-					
+
 					$meta = $args[$meta_key];
 				}
 				if ( $meta ) {
@@ -381,19 +396,19 @@ class Listeo_Core_Listing {
 			                'key'     => '_featured',
 							'value'   => 'on',
 							'compare' => '='
-			            );	
+			            );
 					} else {
-						
+
 						$query_args['meta_query'][] = array(
 			                'key'     => $meta_key,
-			                'value'   => $meta, 
-			            );	
+			                'value'   => $meta,
+			            );
 					}
-					
+
 				}
 			}
-			
-			
+
+
 
 		}
 
@@ -415,7 +430,7 @@ class Listeo_Core_Listing {
 					'value'   => 'on',
 					'compare' => '!='
 				),
-				
+
 			);
 			$query_args['order'] = 'DESC';
 			$query_args['orderby'] = array( 'featured_clause' => 'DESC');
@@ -424,12 +439,12 @@ class Listeo_Core_Listing {
 		if ( empty( $query_args['meta_query'] ) )
 			unset( $query_args['meta_query'] );
 
-	
-		
+
+
 		$query_args = apply_filters( 'realto_get_listings', $query_args, $args );
-		
+
 		$result = new WP_Query( $query_args );
-		
+
 		return $result;
 
 	}
@@ -439,32 +454,32 @@ class Listeo_Core_Listing {
 		global $wpdb;
 
 		global $paged;
-		
+
 		if(isset($args['listeo_orderby'])) {
 			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args($args['listeo_orderby']);
-			
+
 		} else {
-			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args( );	
+			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args( );
 		}
-		
-		
-		
+
+
+
 		if ( get_query_var( 'paged' ) ) { $paged = get_query_var( 'paged' ); }
 		elseif ( get_query_var( 'page' ) ) { $paged = get_query_var( 'page' ); }
 		else { $paged = 1; }
-	
+
 		$search_radius_var = get_query_var( 'search_radius' );
 		if(!empty($search_radius_var)) { $args['search_radius'] = $search_radius_var;	}
 
 		$radius_type_var = get_query_var( 'radius_type' );
 		if(!empty($radius_type_var)) {	$args['radius_type'] = $radius_type_var;	}
-				
+
 		$keyword_var = get_query_var( 'keyword_search' );
 		if(!empty($keyword_var)) {	$args['keyword'] = $keyword_var;	}
-		
+
 		$location_var = get_query_var( 'location_search' );
 		if(!empty($location_var)) {	$args['location'] = $location_var;	}
-		
+
 		$query_args = array(
 			'query_label' 			 => 'listeo_get_listing_query',
 			'post_type'              => 'listing',
@@ -502,7 +517,7 @@ class Listeo_Core_Listing {
 				$postmeta_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keywords[0] ) . "%' ";
 				// Create post title and content SQL
 				$posts_keywords_sql[]    = " post_title LIKE '%" . esc_sql( $keywords[0] ) . "%' OR post_content LIKE '%" . esc_sql(  $keywords[0] ) . "%' ";
-					
+
 				// Get post IDs from post meta search
 
 				$post_ids = $wpdb->get_col( "
@@ -516,11 +531,11 @@ class Listeo_Core_Listing {
 				    SELECT ID FROM {$wpdb->posts}
 				    WHERE ( " . implode( ' OR ', $posts_keywords_sql ) . " )
 				    AND post_type = 'listing'
-				   
+
 				" ), array( 0 ) );
 				/* array( 0 ) is set to return no result when no keyword was found */
 		}
-		
+
 		if ( isset($args['location']) && !empty($args['location']) ) {
 			$radius = $args['search_radius'];
 
@@ -529,13 +544,13 @@ class Listeo_Core_Listing {
 			//  }
 			$radius_type = get_option('listeo_radius_unit','km');
 			$radius_api_key = get_option( 'listeo_maps_api_server' );
-		
+
 			if(!empty($args['location']) && !empty($radius) && !empty($radius_api_key)) {
 				//search by google
-				
+
 				$latlng = listeo_core_geocode($args['location']);
-				
-				$nearbyposts = listeo_core_get_nearby_listings($latlng[0], $latlng[1], $radius, $radius_type ); 
+
+				$nearbyposts = listeo_core_get_nearby_listings($latlng[0], $latlng[1], $radius, $radius_type );
 
 				listeo_core_array_sort_by_column($nearbyposts,'distance');
 				$location_post_ids = array_unique(array_column($nearbyposts, 'post_id'));
@@ -545,7 +560,7 @@ class Listeo_Core_Listing {
 				}
 
 			} else {
-				
+
 				$locations = array_map( 'trim', explode( ',', $args['location'] ) );
 
 				// Setup SQL
@@ -561,7 +576,7 @@ class Listeo_Core_Listing {
 					// Create post title and content SQL
 					$posts_locations_sql[]    = " post_title LIKE '%" . esc_sql( $locations[0] ) . "%' OR post_content LIKE '%" . esc_sql(  $locations[0] ) . "%' ";
 				}
-					
+
 				// Get post IDs from post meta search
 
 				$post_ids = $wpdb->get_col( "
@@ -579,23 +594,23 @@ class Listeo_Core_Listing {
 					    WHERE ( " . implode( ' OR ', $posts_locations_sql ) . " )
 					    AND post_type = 'listing'
 					    AND post_status = 'publish'
-					   
+
 					" ), array( 0 ) );
 				}
-					
-				
+
+
 			}
 		}
-	
+
 		if ( sizeof( $keywords_post_ids ) != 0 && sizeof( $location_post_ids ) != 0 ) {
 			$post_ids = array_intersect($keywords_post_ids, $location_post_ids);
 			if(!empty($post_ids)){
-				$query_args['post__in'] = $post_ids;	
+				$query_args['post__in'] = $post_ids;
 			} else {
-			    
+
 			    $query_args['post__in'] = array(0);
 			}
-			
+
 		} else if (sizeof( $keywords_post_ids ) != 0 && sizeof( $location_post_ids ) == 0) {
 			$query_args['post__in'] = $keywords_post_ids;
 		} else if (sizeof( $keywords_post_ids ) == 0 && sizeof( $location_post_ids ) != 0) {
@@ -607,37 +622,37 @@ class Listeo_Core_Listing {
 		  //       $date_end =  str_replace("/", "-", 	$args['date_end']);
 			 	$date_start =   $args['date_start'];
 		        $date_end =   	$args['date_end'];
-		        
+
 		        $date_start = esc_sql ( date( "Y-m-d H:i:s", strtotime( $wpdb->esc_like( $date_start ) ) ) );
 	            $date_end = esc_sql ( date( "Y-m-d H:i:s", strtotime( $wpdb->esc_like( $date_end ) ) ) );
-	            
-				$posts_not_ids = 
-				$wpdb->get_col( 
-						$wpdb->prepare( 
-							"SELECT listing_id 
-			            	FROM {$wpdb->prefix}bookings_calendar 
-			            	WHERE 
-				            	( %s >= date_start AND %s <= date_end ) 
-				            	OR 
-				            	( %s >= date_start AND %s <= date_end ) 
-				            	OR 
+
+				$posts_not_ids =
+				$wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT listing_id
+			            	FROM {$wpdb->prefix}bookings_calendar
+			            	WHERE
+				            	( %s >= date_start AND %s <= date_end )
+				            	OR
+				            	( %s >= date_start AND %s <= date_end )
+				            	OR
 				            	( date_start >= %s AND date_end <= %s )
-				            GROUP BY listing_id 
+				            GROUP BY listing_id
 			            	",
-			            	$date_start, 
 			            	$date_start,
-			            	$date_end, 
-			            	$date_end, 
-			            	$date_start, 
+			            	$date_start,
+			            	$date_end,
+			            	$date_end,
+			            	$date_start,
 			            	$date_end
 			        )
 	        	);
- 
+
 				$query_args['post__not_in'] = $posts_not_ids;
-			
+
 
 		}
-	
+
 
 		$query_args['tax_query'] = array(
 	        'relation' => 'AND',
@@ -646,8 +661,8 @@ class Listeo_Core_Listing {
 
 
         foreach ($taxonomy_objects as $tax) {
-        	
-        	
+
+
 			$get_tax = false;
 			if((isset($_GET['tax-'.$tax->name]) && !empty($_GET['tax-'.$tax->name]))) {
 				$get_tax = $_GET['tax-'.$tax->name];
@@ -656,21 +671,21 @@ class Listeo_Core_Listing {
 					$get_tax = $args['tax-'.$tax->name] ;
 
 				}
-				
+
 			}
 
         	if(is_array($get_tax)){
-        		
+
         		$query_args['tax_query'][$tax->name] = array('relation'=> get_option('listeo_taxonomy_or_and','OR'));
         		foreach ($get_tax as $key => $value) {
 		    		array_push($query_args['tax_query'][$tax->name], array(
 			           'taxonomy' =>   $tax->name,
 			           'field'    =>   'slug',
 			           'terms'    =>   $value,
-			           
+
 			        ));
 		    	}
-		    	
+
         	} else {
 
             	if( $get_tax ){
@@ -682,7 +697,7 @@ class Listeo_Core_Listing {
 					           'field'    =>  'slug',
 					           'terms'    =>  $term->slug,
 					           'operator' =>  'IN'
-					        ));	
+					        ));
 				    	}
             		} else {
             			$get_tax_array = explode(',',$get_tax);
@@ -691,21 +706,21 @@ class Listeo_Core_Listing {
 					           'taxonomy' =>  $tax->name,
 					           'field'    =>  'slug',
 					           'terms'    =>  $get_tax_array,
-					           
-					        ));	
+
+					        ));
             		}
-			    	
-			    	
+
+
 			    }
 		 	}
-		 	
+
         }
-     
+
 		$available_query_vars = Listeo_Core_Search::build_available_query_vars();
 		$meta_queries = array();
 		$available_query_vars[] = 'featured';
 
-			
+
 		foreach ($available_query_vars as $key => $meta_key) {
 			if( substr($meta_key,0, 4) == "tax-") {
 				continue;
@@ -714,7 +729,7 @@ class Listeo_Core_Listing {
 				continue;
 			}
 			if($meta_key == '_price'){
-					
+
 					$meta = false;
 					if(!empty(get_query_var( '_price_range' ))){
 						$meta = get_query_var( '_price_range' );
@@ -722,7 +737,7 @@ class Listeo_Core_Listing {
 						$meta = $args['_price_range'];
 					}
 					if(!empty($meta)){
-						
+
 						$range = array_map( 'absint', explode( ',', $meta ) );
 
 						$query_args['meta_query'][] = array(
@@ -741,7 +756,7 @@ class Listeo_Core_Listing {
 		                                'compare' => 'BETWEEN',
 		                                'type' => 'NUMERIC',
 		                            ),
-						 
+
 						        ),
 						        array(
 						            'relation' => 'AND',
@@ -757,20 +772,20 @@ class Listeo_Core_Listing {
 		                                'compare' => '>=',
 		                                'type' => 'NUMERIC',
 		                            ),
-						 
+
 						        ),
 				        );
-				       
+
 			        }
 			} else {
 				if (substr($meta_key, -4) == "_min" || substr($meta_key, -4) == "_max") { continue; }
 				$meta = false;
-				
-				
+
+
 				if(!empty(get_query_var( $meta_key ))){
 					$meta = get_query_var( $meta_key );
 				} else if(isset($args[$meta_key] )){
-					
+
 					$meta = $args[$meta_key];
 				}
 				if ( $meta ) {
@@ -779,19 +794,19 @@ class Listeo_Core_Listing {
 			                'key'     => '_featured',
 							'value'   => 'on',
 							'compare' => '='
-			            );	
+			            );
 					} else {
-						
+
 						$query_args['meta_query'][] = array(
 			                'key'     => $meta_key,
-			                'value'   => $meta, 
-			            );	
+			                'value'   => $meta,
+			            );
 					}
-					
+
 				}
 			}
-			
-			
+
+
 
 		}
 
@@ -813,7 +828,7 @@ class Listeo_Core_Listing {
 					'value'   => 'on',
 					'compare' => '!='
 				),
-				
+
 			);
 			$query_args['order'] = 'DESC';
 			$query_args['orderby'] = array( 'featured_clause' => 'DESC');
@@ -834,13 +849,13 @@ class Listeo_Core_Listing {
 		if ( empty( $query_args['meta_query'] ) )
 			unset( $query_args['meta_query'] );
 
-	
-		
+
+
 		$query_args = apply_filters( 'realto_get_listings', $query_args, $args );
 		// var_dump($query_args['meta_query']);die();
-		
+
 		$result = new WP_Query( $query_args );
-		
+
 		return $result;
 
 	}
@@ -850,32 +865,32 @@ class Listeo_Core_Listing {
 		global $wpdb;
 
 		global $paged;
-		
+
 		if(isset($args['listeo_orderby'])) {
 			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args($args['listeo_orderby']);
-			
+
 		} else {
-			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args( );	
+			$ordering_args = Listeo_Core_Listing::get_listings_ordering_args( );
 		}
-		
-		
-		
+
+
+
 		if ( get_query_var( 'paged' ) ) { $paged = get_query_var( 'paged' ); }
 		elseif ( get_query_var( 'page' ) ) { $paged = get_query_var( 'page' ); }
 		else { $paged = 1; }
-	
+
 		$search_radius_var = get_query_var( 'search_radius' );
 		if(!empty($search_radius_var)) { $args['search_radius'] = $search_radius_var;	}
 
 		$radius_type_var = get_query_var( 'radius_type' );
 		if(!empty($radius_type_var)) {	$args['radius_type'] = $radius_type_var;	}
-				
+
 		$keyword_var = get_query_var( 'keyword_search' );
 		if(!empty($keyword_var)) {	$args['keyword'] = $keyword_var;	}
-		
+
 		$location_var = get_query_var( 'location_search' );
 		if(!empty($location_var)) {	$args['location'] = $location_var;	}
-		
+
 		$query_args = array(
 			'query_label' 			 => 'listeo_get_listing_query',
 			'post_type'              => 'listing',
@@ -913,7 +928,7 @@ class Listeo_Core_Listing {
 				$postmeta_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keywords[0] ) . "%' ";
 				// Create post title and content SQL
 				$posts_keywords_sql[]    = " post_title LIKE '%" . esc_sql( $keywords[0] ) . "%' OR post_content LIKE '%" . esc_sql(  $keywords[0] ) . "%' ";
-					
+
 				// Get post IDs from post meta search
 
 				$post_ids = $wpdb->get_col( "
@@ -927,11 +942,11 @@ class Listeo_Core_Listing {
 				    SELECT ID FROM {$wpdb->posts}
 				    WHERE ( " . implode( ' OR ', $posts_keywords_sql ) . " )
 				    AND post_type = 'listing'
-				   
+
 				" ), array( 0 ) );
 				/* array( 0 ) is set to return no result when no keyword was found */
 		}
-		
+
 		if ( isset($args['location']) && !empty($args['location']) ) {
 			$radius = $args['search_radius'];
 
@@ -940,13 +955,13 @@ class Listeo_Core_Listing {
 			//  }
 			$radius_type = get_option('listeo_radius_unit','km');
 			$radius_api_key = get_option( 'listeo_maps_api_server' );
-		
+
 			if(!empty($args['location']) && !empty($radius) && !empty($radius_api_key)) {
 				//search by google
-				
+
 				$latlng = listeo_core_geocode($args['location']);
-				
-				$nearbyposts = listeo_core_get_nearby_listings($latlng[0], $latlng[1], $radius, $radius_type ); 
+
+				$nearbyposts = listeo_core_get_nearby_listings($latlng[0], $latlng[1], $radius, $radius_type );
 
 				listeo_core_array_sort_by_column($nearbyposts,'distance');
 				$location_post_ids = array_unique(array_column($nearbyposts, 'post_id'));
@@ -956,7 +971,7 @@ class Listeo_Core_Listing {
 				}
 
 			} else {
-				
+
 				$locations = array_map( 'trim', explode( ',', $args['location'] ) );
 
 				// Setup SQL
@@ -972,7 +987,7 @@ class Listeo_Core_Listing {
 					// Create post title and content SQL
 					$posts_locations_sql[]    = " post_title LIKE '%" . esc_sql( $locations[0] ) . "%' OR post_content LIKE '%" . esc_sql(  $locations[0] ) . "%' ";
 				}
-					
+
 				// Get post IDs from post meta search
 
 				$post_ids = $wpdb->get_col( "
@@ -990,23 +1005,23 @@ class Listeo_Core_Listing {
 					    WHERE ( " . implode( ' OR ', $posts_locations_sql ) . " )
 					    AND post_type = 'listing'
 					    AND post_status = 'publish'
-					   
+
 					" ), array( 0 ) );
 				}
-					
-				
+
+
 			}
 		}
-	
+
 		if ( sizeof( $keywords_post_ids ) != 0 && sizeof( $location_post_ids ) != 0 ) {
 			$post_ids = array_intersect($keywords_post_ids, $location_post_ids);
 			if(!empty($post_ids)){
-				$query_args['post__in'] = $post_ids;	
+				$query_args['post__in'] = $post_ids;
 			} else {
-			    
+
 			    $query_args['post__in'] = array(0);
 			}
-			
+
 		} else if (sizeof( $keywords_post_ids ) != 0 && sizeof( $location_post_ids ) == 0) {
 			$query_args['post__in'] = $keywords_post_ids;
 		} else if (sizeof( $keywords_post_ids ) == 0 && sizeof( $location_post_ids ) != 0) {
@@ -1018,37 +1033,37 @@ class Listeo_Core_Listing {
 		  //       $date_end =  str_replace("/", "-", 	$args['date_end']);
 			 	$date_start =   $args['date_start'];
 		        $date_end =   	$args['date_end'];
-		        
+
 		        $date_start = esc_sql ( date( "Y-m-d H:i:s", strtotime( $wpdb->esc_like( $date_start ) ) ) );
 	            $date_end = esc_sql ( date( "Y-m-d H:i:s", strtotime( $wpdb->esc_like( $date_end ) ) ) );
-	            
-				$posts_not_ids = 
-				$wpdb->get_col( 
-						$wpdb->prepare( 
-							"SELECT listing_id 
-			            	FROM {$wpdb->prefix}bookings_calendar 
-			            	WHERE 
-				            	( %s >= date_start AND %s <= date_end ) 
-				            	OR 
-				            	( %s >= date_start AND %s <= date_end ) 
-				            	OR 
+
+				$posts_not_ids =
+				$wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT listing_id
+			            	FROM {$wpdb->prefix}bookings_calendar
+			            	WHERE
+				            	( %s >= date_start AND %s <= date_end )
+				            	OR
+				            	( %s >= date_start AND %s <= date_end )
+				            	OR
 				            	( date_start >= %s AND date_end <= %s )
-				            GROUP BY listing_id 
+				            GROUP BY listing_id
 			            	",
-			            	$date_start, 
 			            	$date_start,
-			            	$date_end, 
-			            	$date_end, 
-			            	$date_start, 
+			            	$date_start,
+			            	$date_end,
+			            	$date_end,
+			            	$date_start,
 			            	$date_end
 			        )
 	        	);
- 
+
 				$query_args['post__not_in'] = $posts_not_ids;
-			
+
 
 		}
-	
+
 
 		$query_args['tax_query'] = array(
 	        'relation' => 'AND',
@@ -1057,8 +1072,8 @@ class Listeo_Core_Listing {
 
 
         foreach ($taxonomy_objects as $tax) {
-        	
-        	
+
+
 			$get_tax = false;
 			if((isset($_GET['tax-'.$tax->name]) && !empty($_GET['tax-'.$tax->name]))) {
 				$get_tax = $_GET['tax-'.$tax->name];
@@ -1067,21 +1082,21 @@ class Listeo_Core_Listing {
 					$get_tax = $args['tax-'.$tax->name] ;
 
 				}
-				
+
 			}
 
         	if(is_array($get_tax)){
-        		
+
         		$query_args['tax_query'][$tax->name] = array('relation'=> get_option('listeo_taxonomy_or_and','OR'));
         		foreach ($get_tax as $key => $value) {
 		    		array_push($query_args['tax_query'][$tax->name], array(
 			           'taxonomy' =>   $tax->name,
 			           'field'    =>   'slug',
 			           'terms'    =>   $value,
-			           
+
 			        ));
 		    	}
-		    	
+
         	} else {
 
             	if( $get_tax ){
@@ -1093,7 +1108,7 @@ class Listeo_Core_Listing {
 					           'field'    =>  'slug',
 					           'terms'    =>  $term->slug,
 					           'operator' =>  'IN'
-					        ));	
+					        ));
 				    	}
             		} else {
             			$get_tax_array = explode(',',$get_tax);
@@ -1102,21 +1117,21 @@ class Listeo_Core_Listing {
 					           'taxonomy' =>  $tax->name,
 					           'field'    =>  'slug',
 					           'terms'    =>  $get_tax_array,
-					           
-					        ));	
+
+					        ));
             		}
-			    	
-			    	
+
+
 			    }
 		 	}
-		 	
+
         }
-     
+
 		$available_query_vars = Listeo_Core_Search::build_available_query_vars();
 		$meta_queries = array();
 		$available_query_vars[] = 'featured';
 
-			
+
 		foreach ($available_query_vars as $key => $meta_key) {
 			if( substr($meta_key,0, 4) == "tax-") {
 				continue;
@@ -1125,7 +1140,7 @@ class Listeo_Core_Listing {
 				continue;
 			}
 			if($meta_key == '_price'){
-					
+
 					$meta = false;
 					if(!empty(get_query_var( '_price_range' ))){
 						$meta = get_query_var( '_price_range' );
@@ -1133,7 +1148,7 @@ class Listeo_Core_Listing {
 						$meta = $args['_price_range'];
 					}
 					if(!empty($meta)){
-						
+
 						$range = array_map( 'absint', explode( ',', $meta ) );
 
 						$query_args['meta_query'][] = array(
@@ -1152,7 +1167,7 @@ class Listeo_Core_Listing {
 		                                'compare' => 'BETWEEN',
 		                                'type' => 'NUMERIC',
 		                            ),
-						 
+
 						        ),
 						        array(
 						            'relation' => 'AND',
@@ -1168,20 +1183,20 @@ class Listeo_Core_Listing {
 		                                'compare' => '>=',
 		                                'type' => 'NUMERIC',
 		                            ),
-						 
+
 						        ),
 				        );
-				       
+
 			        }
 			} else {
 				if (substr($meta_key, -4) == "_min" || substr($meta_key, -4) == "_max") { continue; }
 				$meta = false;
-				
-				
+
+
 				if(!empty(get_query_var( $meta_key ))){
 					$meta = get_query_var( $meta_key );
 				} else if(isset($args[$meta_key] )){
-					
+
 					$meta = $args[$meta_key];
 				}
 				if ( $meta ) {
@@ -1190,19 +1205,19 @@ class Listeo_Core_Listing {
 			                'key'     => '_featured',
 							'value'   => 'on',
 							'compare' => '='
-			            );	
+			            );
 					} else {
-						
+
 						$query_args['meta_query'][] = array(
 			                'key'     => $meta_key,
-			                'value'   => $meta, 
-			            );	
+			                'value'   => $meta,
+			            );
 					}
-					
+
 				}
 			}
-			
-			
+
+
 
 		}
 
@@ -1224,7 +1239,7 @@ class Listeo_Core_Listing {
 					'value'   => 'on',
 					'compare' => '!='
 				),
-				
+
 			);
 			$query_args['order'] = 'DESC';
 			$query_args['orderby'] = array( 'featured_clause' => 'DESC');
@@ -1242,12 +1257,12 @@ class Listeo_Core_Listing {
 		if ( empty( $query_args['meta_query'] ) )
 			unset( $query_args['meta_query'] );
 
-	
-		
+
+
 		$query_args = apply_filters( 'realto_get_listings', $query_args, $args );
-		
+
 		$result = new WP_Query( $query_args );
-		
+
 		return $result;
 
 	}
@@ -1284,7 +1299,7 @@ class Listeo_Core_Listing {
 
 		$price_output = '';
 		if ( !empty( $price_raw ) ) :
-			
+
  			$currency_abbr = get_option( 'listeo_currency' );
 			$currency_postion = get_option( 'listeo_currency_postion' );
 			$currency_symbol = Listeo_Core_Listing::get_currency_symbol($currency_abbr);
@@ -1320,7 +1335,7 @@ class Listeo_Core_Listing {
 
 		$price_output = '';
 		if ( !empty( $price_raw ) ) :
-			
+
  			$currency_abbr = get_option( 'listeo_currency' );
 			$currency_postion = get_option( 'listeo_currency_postion' );
 			$currency_symbol = Listeo_Core_Listing::get_currency_symbol($currency_abbr);
@@ -1353,14 +1368,14 @@ class Listeo_Core_Listing {
 
 		$price_min = get_post_meta( $post, '_price_min', true );
 		$price_max = get_post_meta( $post, '_price_max', true );
-		
+
 		if(!empty($price_min) || !empty($price_max)) {
 			if (is_numeric($price_min)) {
 			    $price_min_raw = number_format_i18n($price_min);
-			} 
+			}
 			if (is_numeric($price_max)) {
 			    $price_max_raw = number_format_i18n($price_max);
-			} 
+			}
 			$currency_abbr = get_option( 'listeo_currency' );
 			$currency_postion = get_option( 'listeo_currency_postion' );
 			$currency_symbol = Listeo_Core_Listing::get_currency_symbol($currency_abbr);
@@ -1368,20 +1383,20 @@ class Listeo_Core_Listing {
 				if(!empty($price_min_raw) && !empty($price_max_raw)){
 					$price_output .=  $price_min_raw . $currency_symbol;
 					$price_output .=  ' - ';
-					$price_output .=  $price_max_raw . $currency_symbol;	
-				} else 
+					$price_output .=  $price_max_raw . $currency_symbol;
+				} else
 				if(!empty($price_min_raw) && empty($price_max_raw)) {
 					$price_output .=  esc_html__('Starts from ','listeo_core') .$price_min_raw . $currency_symbol;
 				} else {
 					$price_output .=  esc_html__('Up to ','listeo_core') .$price_max_raw . $currency_symbol;
 				}
-				
+
 			} else {
 				if(!empty($price_min_raw) && !empty($price_max_raw)){
 					$price_output .=  $currency_symbol . $price_min_raw;
 					$price_output .=  ' - ';
-					$price_output .=  $currency_symbol . $price_max_raw;	
-				} else 
+					$price_output .=  $currency_symbol . $price_max_raw;
+				} else
 				if(!empty($price_min_raw) && empty($price_max_raw)) {
 					$price_output .=  esc_html__('Starts from ','listeo_core') .$currency_symbol .$price_min_raw;
 				} else {
@@ -1406,7 +1421,7 @@ class Listeo_Core_Listing {
 		$bookmarks_num = 0;
 
 		$bookmarks_counter = get_post_meta( $post, 'bookmarks_counter', true );
-		
+
 		if(!empty($bookmarks_counter)) $bookmarks_num=$bookmarks_counter;
 
 		return $bookmarks_num;
@@ -1437,11 +1452,11 @@ class Listeo_Core_Listing {
 		} else {
 			if(empty($price_per_raw)) {
 				$output = '';
-				
+
 			} else {
 				$output = $price_per_raw;
 			}
-			
+
 		}
 
 		$offer_type = get_the_listing_offer_type();
@@ -1454,27 +1469,27 @@ class Listeo_Core_Listing {
 
 		if($offer_type == 'rent') {
 			$periods = listeo_core_get_rental_period();
-			
+
 			$current_selection = get_post_meta( $post, '_rental_period', true );
-		
+
 			if(!empty($current_selection) && isset($periods[$current_selection])) {
-				
-					$output = $periods[$current_selection];	
-				
+
+					$output = $periods[$current_selection];
+
 			} else {
 				$output = '';
 			}
-			
+
 		} else {
 			if(get_option( 'listeo_core_hide_price_per_scale' )) {
 				$output = '';
 			} else {
 				$scale = get_option( 'scale', 'sq ft' );
-				$output .= ' / '.apply_filters('listeo_core_scale',$scale);		
+				$output .= ' / '.apply_filters('listeo_core_scale',$scale);
 			}
-			
+
 		}
-		
+
 
 
 		return apply_filters( 'get_listing_price', $output, $post );
@@ -1482,7 +1497,7 @@ class Listeo_Core_Listing {
 	}
 
 
-	
+
 	public static function get_currency_symbol( $currency = '' ) {
 		if ( ! $currency ) {
 			$currency = get_option( 'currency' );
@@ -1568,7 +1583,7 @@ class Listeo_Core_Listing {
 				break;
 			case 'ISK' :
 				$currency_symbol = 'Kr.';
-				break;	
+				break;
 			case 'KZT' :
 				$currency_symbol = '₸';
 				break;
@@ -1643,7 +1658,7 @@ class Listeo_Core_Listing {
 	public static function get_listings_ordering_args( $orderby = '', $order = '' ) {
 
 		// Get ordering from query string unless defined
-		if ( $orderby ) {	
+		if ( $orderby ) {
 			$orderby_value = $orderby;
 		} else {
 			$orderby_value = isset( $_GET['listeo_core_order'] ) ? (string) $_GET['listeo_core_order']  : get_option( 'listeo_sort_by','date' );
@@ -1668,7 +1683,7 @@ class Listeo_Core_Listing {
 			case 'featured' :
 				$args['orderby']  = 'meta_value_num date';
 				$args['meta_key']  = '_featured';
-				
+
 				break;
 			case 'date' :
 				$args['orderby']  = 'date';
@@ -1691,7 +1706,7 @@ class Listeo_Core_Listing {
 				$args['orderby']  = 'comment_count';
 				$args['order']  = 'DESC';
 				break;
-			
+
 			case 'title' :
 				$args['orderby'] = 'title';
 				$args['order']   = ( 'desc' === $order ) ? 'DESC' : 'ASC';
@@ -1701,7 +1716,7 @@ class Listeo_Core_Listing {
 				$args['order']    = ( 'ASC' === $order ) ? 'ASC' : 'DESC';
 				break;
 		}
-		
+
 		return apply_filters( 'listeo_core_get_listings_ordering_args', $args );
 	}
 
