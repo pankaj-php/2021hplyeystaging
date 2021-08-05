@@ -16,6 +16,10 @@ $related_args1 = array(
         )
     )
 );
+
+$uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri_segments = explode('/', $uri_path);
+
 $related_args = array(
     'post_type' => 'listing',
     'posts_per_page' => 4,
@@ -30,13 +34,21 @@ $related_args = array(
         )
     ),
     'meta_query' => array(
+        'relation' => 'AND',
         array(
             'key'       => '_verified',
             'value'     => 'on',
             'compare'   => '=',
+        ),
+        array(
+            'key'       => '_address',
+            'value'     => $uri_segments[2],
+            'compare'   => 'LIKE'
         )
     ),
 );
+
+
 
 $related_query = new wp_query($related_args);
     
