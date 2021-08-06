@@ -2641,9 +2641,29 @@ p.mem-bdg:before {
    margin-right: 6px;
 }
 
-.fa-smile-o
-{
-    font-size: 20px;
-    color: #30da22;
-    padding-right: 10px;
+/* home page reivew  */
+
+.listeo_grid_view_item .listing-item-content.listo-new-listing-iteam .star-rating {
+    margin-top: 0;
+    top: 6px;
+}
+
+.listing-item-content.listo-new-listing-iteam {
+    position: relative;
+    bottom: -7px !important;
+}
+
+.main-btn-new {
+    margin-top: 15px;
+}
+
+@media only screen and (max-width: 900px) {
+    .listings-container.grid-layout.row .col-lg-4.col-md-6 {
+        width: 49%;
+        display: inline-block;
+    }
+
+    .star-rating.listo-new-star-rating {
+        margin-top: 3px !important;
+    }
 }
