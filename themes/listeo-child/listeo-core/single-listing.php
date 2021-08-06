@@ -136,6 +136,23 @@ else: ?>
 					<?php endif; ?>
 					
 					<?php
+					$place_id = get_post_meta($post->ID,'place_id', true);
+
+                        $greviews  = array();
+                        if(!empty($place_id)){
+	                     $place_data = listeo_get_google_reviews($place_id,$post);
+	                    if(empty($place_data['result']['reviews'])){
+		                 $greviews  = array();
+	                   } else {
+		                 $greviews = $place_data['result']['reviews'];	
+	                   }
+                     }
+
+	                  if(isset($greviews) && !empty($greviews) && count($greviews) > 0){
+                       
+                       $google_reviews_count = $place_data['result']['user_ratings_total'];
+		            }
+
 						if(!get_option('listeo_disable_reviews')){
 							 $rating = get_post_meta($post->ID, 'listeo-avg-rating', true); 
 								if(isset($rating) && $rating > 0 ) : 
@@ -145,8 +162,9 @@ else: ?>
 									<?php } else { ?>
 										<div class="star-rating" data-rating="<?php echo $rating; ?>">
 									<?php } ?>
-									<?php $number = listeo_get_reviews_number($post->ID);  ?>
-									<div class="rating-counter"><a href="#listing-reviews">(<?php printf( _n( '%s review', '%s reviews', $number,'listeo_core' ), number_format_i18n( $number ) );  ?>)</a></div>
+									<?php $number = listeo_get_reviews_number($post->ID); 
+									$totalreviews=$number+$google_reviews_count; ?>
+									<div class="rating-counter"><a href="#listing-reviews">(<?php printf( _n( '%s review', '%s reviews', $totalreviews,'listeo_core' ), number_format_i18n( $totalreviews ) );  ?>)</a></div>
 								</div>
 							<?php endif; 
 						}
