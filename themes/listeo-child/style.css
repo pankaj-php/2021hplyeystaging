@@ -2278,6 +2278,8 @@ border-radius: 16px !important;
 .listeo_direct_fb_style_msg_input input{
     border-radius: 10px;
     font-weight: 700;
+background: #f6f6f6;
+border: 0px solid #dbdbdb;
 }
 .listeo_direct_fb_style_msg .listeo_direct_fb_style_msg_btn{
     width: 20%;
@@ -2285,9 +2287,9 @@ border-radius: 16px !important;
     margin-top: 12px;
 }
 .listeo_direct_fb_style_msg #direct_fb_style_msg_btn,#listeo_fb_style_unverify_msg{
-    background: #19b453 !important;
+    background: #ff7465 !important;
     color: #fff;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 16px;
     text-align: center;
     margin: 0;
@@ -2311,7 +2313,6 @@ border-radius: 16px !important;
     width: 100%;
 }
 .listing_feature_not_checked{
-    text-decoration: line-through;
 }
 .listing_feature_not_checked:before{
     background-color: gray !important;
@@ -2330,9 +2331,9 @@ border-radius: 16px !important;
     margin-top: 10px;
 }
 .listeo_custom_sec_seprator hr{
-    border-top: 2px solid #ccc !important;
-    margin-top: 0px !important;
-}
+    border-bottom: 1px solid rgb(221, 221, 221) !important;
+     margin-top: 0px !important;
+ }
 
 @media (max-width: 768px){ 
     #listeo_gallery_desktop{
