@@ -265,6 +265,8 @@ exit();*/
 			<!-- User profile status start -->
 			<div class="boxed-widget margin-top-30 margin-bottom-50 verification-section bad-sec">
 				<?php
+									global $wpdb;
+
 					$udata = get_userdata( $user->ID );
 					$registered = $udata->user_registered;
 				?>
@@ -298,6 +300,28 @@ exit();*/
 		                        if($review_count > $twenty){
 								echo '<div id="high_rate_div"><p class="high_rate"><i class="fa fa-star" aria-hidden="true"></i>Highly Rated</p></div>';
 		                        }
+
+		                        $selectCon= $wpdb->get_results("SELECT *  FROM {$wpdb->prefix}listeo_core_conversations WHERE user_2 = {$user->ID}");
+
+	       $alltime = [];
+	       foreach($selectCon as $con){
+		  $time = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}listeo_core_messages WHERE conversation_id = {$con->id} AND sender_id = {$user->ID} LIMIT 1");
+		   if(!empty($time)){
+			$alltime[]= $time;
+		   }
+
+	      }
+	      if((int) count($alltime) > 0 && (int) count($selectCon) > 0){
+		    $rate =  15;//(int) count($alltime)/ (int) count($selectCon) * 100;
+	      }else{
+		    $rate = null;
+	       }
+
+	
+	if((80 <= $rate) && ($rate <= 100)){
+		echo '	<div id="very_responsive_section">
+            <p class="very_response"><i class="fa fa-smile-o" aria-hidden="true"></i>Very Responsive</p></div>';
+	}
 							 ?>
 			          	
 						
