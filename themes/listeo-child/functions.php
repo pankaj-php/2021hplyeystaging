@@ -558,6 +558,29 @@ public function widget( $args, $instance ) {
 		                        if($review_count > $twenty){
 								echo '<div id="high_rate_div"><p class="high_rate"><i class="fa fa-star" aria-hidden="true"></i>Highly Rated</p></div>';
 		                        }
+
+		                       global $wpdb;
+	$selectCon= $wpdb->get_results("SELECT *  FROM {$wpdb->prefix}listeo_core_conversations WHERE user_2 = {$udata->ID}");
+
+	$alltime = [];
+	foreach($selectCon as $con){
+		$time = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}listeo_core_messages WHERE conversation_id = {$con->id} AND sender_id = {$udata->ID} LIMIT 1");
+		if(!empty($time)){
+			$alltime[]= $time;
+		}
+
+	}
+	if((int) count($alltime) > 0 && (int) count($selectCon) > 0){
+		$rate =  15;//(int) count($alltime)/ (int) count($selectCon) * 100;
+	}else{
+		$rate = null;
+	}
+
+	
+	if((80 <= $rate) && ($rate <= 100)){
+		echo '	<div id="very_responsive_section">
+            <p class="very_response"><i class="fa fa-smile-o" aria-hidden="true"></i>Very Responsive</p></div>';
+	}
 							 ?>
 	 </div>
 					
