@@ -2612,7 +2612,19 @@ p.mem-bdg {
 .google-reviews-read-more.bottom {
     justify-content: center !important;
 }
- 
+
+
+.star-rating {
+    display: inline-block;
+    position: relative;
+    margin-top: 0;
+}
+
+#listing-google-reviews * h5 {
+    display: inline-block;
+    position: relative;
+}
+
 /* Google Reviews end */
 
 .high_rate i.fa.fa-star {

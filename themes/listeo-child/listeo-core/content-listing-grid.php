@@ -89,23 +89,28 @@
                }
                else
                {
-                $place_id = get_post_meta($post->ID,'place_id', true);
+               $place_id = get_post_meta($post->ID,'place_id', true);
 
+                $greviews  = array();
+                
+                if(!empty($place_id)){
+                
+                $place_data = listeo_get_google_reviews($place_id,$post);
+                  
+                  if(empty($place_data['result']['reviews'])){
+                  
                   $greviews  = array();
-                    if(!empty($place_id)){
-                       $place_data = listeo_get_google_reviews($place_id,$post);
-                    if(empty($place_data['result']['reviews'])){
-                       $greviews  = array();
-                    } else {
-                       $greviews = $place_data['result']['reviews'];  
-                     }
-                     }
+                     
+                     } else {
+                  $greviews = $place_data['result']['reviews'];  
+                  }
+                }
 
                     if(isset($greviews) && !empty($greviews) && count($greviews) > 0){
                        
                        $google_reviews_count = $place_data['result']['user_ratings_total'];
-                  }    
-                    $number = listeo_get_reviews_number($post->ID);
+                }    
+                    $number = listeo_get_reviews_number($post->ID); 
                     $totalreviews=$number+$google_reviews_count;
                ?>
             <div class="star-rating listo-new-star-rating" data-rating="1">
