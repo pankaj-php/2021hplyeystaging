@@ -2612,7 +2612,19 @@ p.mem-bdg {
 .google-reviews-read-more.bottom {
     justify-content: center !important;
 }
- 
+
+
+.star-rating {
+    display: inline-block;
+    position: relative;
+    margin-top: 0;
+}
+
+#listing-google-reviews * h5 {
+    display: inline-block;
+    position: relative;
+}
+
 /* Google Reviews end */
 
 .high_rate i.fa.fa-star {
@@ -2641,17 +2653,12 @@ p.mem-bdg:before {
    margin-right: 6px;
 }
 
-/* home page reivew  start*/
+/* home page reivew  */
 
 .listeo_grid_view_item .listing-item-content.listo-new-listing-iteam .star-rating {
     margin-top: 0;
-    top: 15px;
+    top: 6px;
 }
-
-.listeo_grid_view_item h3.listeo_single_list_title.listo-hed-h3-new {
-    line-height: unset !important;
-}
-
 
 .listing-item-content.listo-new-listing-iteam {
     position: relative;
@@ -2672,8 +2679,3 @@ p.mem-bdg:before {
         margin-top: 3px !important;
     }
 }
-
-
-
-
-/* home page reivew end */
