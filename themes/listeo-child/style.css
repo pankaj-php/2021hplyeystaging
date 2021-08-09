@@ -2641,12 +2641,17 @@ p.mem-bdg:before {
    margin-right: 6px;
 }
 
-/* home page reivew  */
+/* home page reivew  start*/
 
 .listeo_grid_view_item .listing-item-content.listo-new-listing-iteam .star-rating {
     margin-top: 0;
-    top: 6px;
+    top: 15px;
 }
+
+.listeo_grid_view_item h3.listeo_single_list_title.listo-hed-h3-new {
+    line-height: unset !important;
+}
+
 
 .listing-item-content.listo-new-listing-iteam {
     position: relative;
@@ -2667,3 +2672,8 @@ p.mem-bdg:before {
         margin-top: 3px !important;
     }
 }
+
+
+
+
+/* home page reivew end */
